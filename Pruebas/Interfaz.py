@@ -41,7 +41,7 @@ def ventana_user(lienzo):
 def ventana_adm(lienzo):
     lienzo.destroy()
     lienzo = tk.Tk()
-    lienzo.geometry("550x50")
+    lienzo.geometry("550x200")
     lienzo.title("Administrador")
     groupbox = LabelFrame(lienzo, text="Seleccione una opcion", padx=50, pady=5)
     groupbox.grid(row=1, column=0, padx=0, pady=0)

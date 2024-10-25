@@ -50,3 +50,33 @@ def validarusuario(user, pw):
 
 	except pyodbc.Error as error:
 		print("Error al conectar a la base de datos:", error)
+		
+
+def usuarioNuevo(usuario, contrasena, rol, email):
+	
+	try:
+		conexion = pyodbc.connect(parametros_conexion)
+		print("Conexión exitosa")
+
+		cursor = conexion.cursor()
+
+        # Consulta para verificar usuario, contraseña y rol
+		query = "INSERT INTO usuarios (usuario, contraseña, rol, email) VALUES(?,?,?,?)"
+		
+		try:
+			cursor.execute(query, (usuario, contrasena, rol, email))
+
+			conexion.commit()
+			
+		except pyodbc.Error as err:
+			
+			print("error al agregar usuario", err)
+			
+            
+
+		cursor.close()
+		conexion.close()
+
+	except pyodbc.Error as error:
+		print("Error al conectar a la base de datos:", error.with_traceback)
+
