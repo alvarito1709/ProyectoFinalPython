@@ -1,16 +1,8 @@
 
 
-Class User():
-	
-	usuario= ''
-	
-	contrasena = ''
-	
-	rol = ''
-	
-	email = ''
-	
-	def __init__(usuario, contrasena, rol, email):
+class User:
+
+	def __init__(self, usuario, contrasena, rol, email):
 		
 		self.usuario = usuario
 		
@@ -20,4 +12,14 @@ Class User():
 		
 		self.email = email
 		
+
+
+def crearUsuario(usuario, contrasena, rol, email):
+	
+	return User(usuario, contrasena, rol, email)
+	
+
+usuario = crearUsuario('alvaro', '12345','ADMIN', 'alvaro@mail.com')
+
+print(usuario.email, usuario.usuario)
 	
