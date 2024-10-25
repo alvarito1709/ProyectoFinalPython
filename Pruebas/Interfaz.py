@@ -13,7 +13,10 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 import pyodbc
+
+import sqlConnector as sql
 #conecto a la base de datos
+
 
 
 def ventana_user(lienzo):
@@ -32,36 +35,7 @@ def ventana_user(lienzo):
     return
 
 
-def validarusuario(lienzo, user, pw):
-    try:
-        conexion = pyodbc.connect(
-            r"Driver={SQL Server};SERVER=DESKTOP-MM59BEH\SQLEXPRESS;DATABASE=DB_USUARIOS;Trusted_Connection=yes;")
-        print("Conexión exitosa")
 
-        cursor = conexion.cursor()
-
-        # Consulta para verificar usuario, contraseña y rol
-        query = 'SELECT rol FROM usuarios WHERE usuario = ? AND contraseña = ?'
-        cursor.execute(query, (user.get(), pw.get()))
-
-        result = cursor.fetchone()
-
-        if result:
-            rol = result[0]
-            if rol == 1:  # Si rol es True (1)
-                print("Usuario Administrador")
-                ventana_adm(lienzo)  # Llamar a la ventana de administrador
-            else:  # Si rol es False (0)
-                print("Usuario Normal")
-                ventana_user(lienzo)  # Llamar a la ventana de usuario
-        else:
-            messagebox.showerror("Error", "Usuario o contraseña incorrectos")
-
-        cursor.close()
-        conexion.close()
-
-    except pyodbc.Error as error:
-        print("Error al conectar a la base de datos:", error)
 
 
 def ventana_adm(lienzo):
@@ -75,42 +49,59 @@ def ventana_adm(lienzo):
     Button(groupbox, text="Editar Destino", width=20).grid(row=1, column=0)
     Button(groupbox, text="Agregar Destino", width=20).grid(row=1, column=1)
     Button(groupbox, text="Actualizar Destino", width=20).grid(row=1, column=2)
+    
+def checkLogin(lienzo, username, password):
+	
+	usuario = sql.validarusuario(username, password)
+	
+	if usuario == "user_admin":
+		
+		ventana_adm(lienzo)
+		
+	elif usuario == "user_cliente":
+		
+		ventana_user(lienzo)
+		
+	else:
+		messagebox.showerror("Error", "Usuario o contraseña incorrectos")
 
 
 class LoginUsuario:
-    def login():
-        try:
-            lienzo = Tk()
-            lienzo.geometry("800x400")
-            lienzo.title("Login")
+	def login():
+		try:
+			lienzo = Tk()
+			lienzo.geometry("800x400")
+			lienzo.title("Login")
 
             # recuadro de Login
             # recuadro de Login
-            groupbox = LabelFrame(lienzo, text="Login", padx=5, pady=5)
-            groupbox.grid(column=0, row=0, padx=220, pady=20)
+			groupbox = LabelFrame(lienzo, text="Login", padx=5, pady=5)
+			groupbox.grid(column=0, row=0, padx=220, pady=20)
 
             # Variables para almacenar el contenido de los Entry
-            username = StringVar()
-            password = StringVar()
+			username = StringVar()
+			password = StringVar()
 
-            labelname = Label(groupbox, text="Username: ", width=13, font=("Arial", 12))
-            labelname.grid(row=0, column=0)
-            textboxusername = Entry(groupbox, textvariable=username)
-            textboxusername.grid(row=0, column=2)
+			labelname = Label(groupbox, text="Username: ", width=13, font=("Arial", 12))
+			labelname.grid(row=0, column=0)
+			textboxusername = Entry(groupbox, textvariable=username)
+			textboxusername.grid(row=0, column=2)
 
-            labelpw = Label(groupbox, text="Password: ", width=13, font=("Arial", 12))
-            labelpw.grid(row=1, column=0)
-            textboxpw = Entry(groupbox, textvariable=password, show='*')  # 'show' para ocultar la contraseña
-            textboxpw.grid(row=1, column=2)
+			labelpw = Label(groupbox, text="Password: ", width=13, font=("Arial", 12))
+			labelpw.grid(row=1, column=0)
+			textboxpw = Entry(groupbox, textvariable=password, show='*')  # 'show' para ocultar la contraseña
+			textboxpw.grid(row=1, column=2)
 
-            Button(groupbox, text="Login", command=lambda: validarusuario(lienzo, username, password), width=10).grid(row=2, column=1)
+			Button(groupbox, text="Login", command=lambda: checkLogin(lienzo, username, password), width=10).grid(row=2, column=1)
+            
+					
 
             # recuadro de paquetes
 
-            lienzo.mainloop()
+			lienzo.mainloop()
 
 
-        except ValueError as error:
-            print("Error al mostrar la interfaz, error: {}".format(error))
+		except ValueError as error:
+			print("Error al mostrar la interfaz, error: {}".format(error))
 
-    login()
+	login()
