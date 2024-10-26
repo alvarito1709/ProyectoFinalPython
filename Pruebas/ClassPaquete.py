@@ -1,10 +1,12 @@
-
+import uuid
 
 class Paquete:
 
 	
 	
-	def __init__(self, destino, duracion, precio, stock):
+	def __init__(self, destino, duracion, precio, stock, id_paquete = None):
+		
+		self.id_paquete = id_paquete or uuid.uuid4()
 		
 		self.destino = destino
 		
@@ -20,6 +22,6 @@ def crearPaquete(destino, duracion, precio, stock):
 	return Paquete(destino,duracion, precio, stock)
 	
 	
-paqueteNuevo = crearPaquete('Dubai', 5, 500, 10)
+#paqueteNuevo = crearPaquete('Dubai', 5, 500, 10)
 
-print(paqueteNuevo.destino, paqueteNuevo.duracion, paqueteNuevo.precio, paqueteNuevo.stock)
+#print(paqueteNuevo.destino, paqueteNuevo.duracion, paqueteNuevo.precio, paqueteNuevo.stock)

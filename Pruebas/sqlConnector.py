@@ -61,7 +61,6 @@ def usuarioNuevo(user : User):
 	
 		try:
 			conexion = pyodbc.connect(parametros_conexion)
-			print("Conexión exitosa")
 
 			cursor = conexion.cursor()
 
@@ -90,17 +89,54 @@ def usuarioNuevo(user : User):
 	else:
 		print("El objeto tiene que ser de tipo User")
 		
+#Funcion para listar todos los paquetes en la base de datos (RETORNA LISTA DE OBJETOS PAQUETE)
+
+def listarPaquetes(): 
+	
+	try: 
+		conexion = pyodbc.connect(parametros_conexion)
+		
+		cursor = conexion.cursor()
+		
+		query = "SELECT * FROM paquetes"
+
+		cursor.execute(query)
+			
+		listaPaquetes = []
+		
+		
+		#Mapea el objeto cursor que hizo la consulta para convertir el retorno en un objeto de tipo Paquetre
+		for index in cursor:
+			
+			paquete = Paquete( index.destino, index.duracion, index.precio, index.stock, index.id_paquete)
+			
+			listaPaquetes.append(paquete)
+			
+		return listaPaquetes
+			
+	except pyodbc.Error as err: 
+		
+		print("Error al hacer la consulta", err)
+		
+		
+		
+#lista = listarPaquetes()
+
+#for index in range(0,len(lista)):
+	
+#	print(lista[index].destino)
 		
 
 
 
 def paqueteNuevo(paquete : Paquete):
 	
+	
+	#Verifica que la instancia sea del tipo correcto
 	if isinstance(paquete, Paquete):
 		
 		try:
 			conexion = pyodbc.connect(parametros_conexion)
-			print("Conexión exitosa")
 
 			cursor = conexion.cursor()
 
@@ -129,4 +165,40 @@ def paqueteNuevo(paquete : Paquete):
 	else:
 		print("El objeto debe ser de tipo Paquete")
 
+
+
+def modificarPaquete(paquete : Paquete):
+	
+	#Verifica que la instancia sea del tipo correcto
+	if isinstance(paquete, Paquete):
 		
+		try:
+			conexion = pyodbc.connect(parametros_conexion)
+
+			cursor = conexion.cursor()
+
+			# Query para insertar nuevo usuario
+			query = "UPDATE paquetes SET destino = ?, duracion = ?, precio = ?, stock = ? WHERE id_paquete = ?"
+			
+			try:
+					
+				#ejecuta la query que declaramos anteriormente
+				cursor.execute(query, (paquete.destino, paquete.duracion, paquete.precio, paquete.stock, paquete.id_paquete))
+
+				conexion.commit()
+					
+			except pyodbc.Error as err:
+					
+				print("error al editar paquete", err)
+				
+				
+
+			cursor.close()
+			conexion.close()
+
+		except pyodbc.Error as error:
+			print("Error al conectar a la base de datos:", error.with_traceback)
+			
+	else:
+		print("El objeto debe ser de tipo Paquete")
+
