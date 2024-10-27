@@ -20,19 +20,41 @@ import sqlConnector as sql
 
 
 def ventana_user(lienzo):
-    lienzo.destroy()
-    lienzo = tk.Tk()
-    lienzo.geometry("800x400")
-    lienzo.title("User")
+	
+	lienzo.destroy()
+    
+	lienzo = tk.Tk()
+    
+	lienzo.geometry("800x400")
+    
+	lienzo.title("User")
+    
     #recuadro destino
-    groupbox = LabelFrame(lienzo, text="Seleccione el destino", padx=5, pady=5)
-    groupbox.grid(row=1, column=0, padx=0, pady=0)
-    labelDest = Label(groupbox, text="Destino ", width=13, font=("Arial", 12)).grid(row=1, column=0)
-    labeldestino = Label(groupbox, text="Seleccione el destino: ", width=20, font=("Arial", 12)).grid(row=1,column=0)
-    select_destino = tk.StringVar()
-    combo = ttk.Combobox(lienzo, values=["Copacabana", "United States", "Islas Galapagos", "Buenos Aires"],width=30, textvariable=select_destino).grid(row=1, column=1)
-    lienzo.mainloop()
-    return
+	groupbox = LabelFrame(lienzo, text="Seleccione el destino", padx=5, pady=5)
+    
+	groupbox.grid(row=1, column=0, padx=0, pady=0)
+    
+	labelDest = Label(groupbox, text="Destino ", width=13, font=("Arial", 12)).grid(row=1, column=0)
+    
+	labeldestino = Label(groupbox, text="Seleccione el destino: ", width=20, font=("Arial", 12)).grid(row=1,column=0)
+    
+	select_destino = tk.StringVar()
+    
+	listaPaquetes = []
+    
+	destinosSQL = sql.listarPaquetes()
+    
+	for i in destinosSQL:
+		listaPaquetes.append(i.destino)
+    
+	combo = ttk.Combobox(lienzo, values= listaPaquetes,width=30, textvariable=select_destino).grid(row=1, column=1)
+	
+	#paqueteSeleccionado = combo.bind("<<ComboboxSelected>>", sql.buscarPaquetePorId(combo.get()))
+	
+	#print(paqueteSeleccionado.destino)
+	lienzo.mainloop()
+    
+	return
 
 
 
@@ -72,6 +94,8 @@ class LoginUsuario:
 			lienzo = Tk()
 			lienzo.geometry("800x400")
 			lienzo.title("Login")
+			
+			lienzo.iconbitmap("viajes.ico")
 
             # recuadro de Login
             # recuadro de Login

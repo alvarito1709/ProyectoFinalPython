@@ -128,6 +128,42 @@ def listarPaquetes():
 		
 
 
+def buscarPaquetePorId(paquete : Paquete):
+	
+	try:
+			conexion = pyodbc.connect(parametros_conexion)
+
+			cursor = conexion.cursor()
+
+			# Query para buscar paquete por ID
+			query = "SELECT * FROM paquetes WHERE id_paquete = ?"
+			
+			try:
+					
+				#ejecuta la query que declaramos anteriormente junto a la variable que toma por parametro la funcion
+				cursor.execute(query, paquete.id_paquete)
+
+				paquete = cursor.fetchone()
+				
+				return paquete
+					
+			except pyodbc.Error as err:
+					
+				print("Paquete no encontrado", err)
+				
+				
+
+			cursor.close()
+			conexion.close()
+
+	except pyodbc.Error as error:
+		print("Error al conectar a la base de datos:", error.with_traceback)
+			
+			
+#buscarPaquete = buscarPaquetePorId(2)
+
+#print(buscarPaquete.destino)
+
 
 def paqueteNuevo(paquete : Paquete):
 	
