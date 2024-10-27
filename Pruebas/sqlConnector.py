@@ -128,7 +128,7 @@ def listarPaquetes():
 		
 
 
-def buscarPaquetePorId(paquete : Paquete):
+def buscarPaquetePorId(paqueteId):
 	
 	try:
 			conexion = pyodbc.connect(parametros_conexion)
@@ -141,7 +141,7 @@ def buscarPaquetePorId(paquete : Paquete):
 			try:
 					
 				#ejecuta la query que declaramos anteriormente junto a la variable que toma por parametro la funcion
-				cursor.execute(query, paquete.id_paquete)
+				cursor.execute(query, paqueteId)
 
 				paquete = cursor.fetchone()
 				

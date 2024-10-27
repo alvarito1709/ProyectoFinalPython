@@ -28,6 +28,8 @@ def ventana_user(lienzo):
 	lienzo.geometry("800x400")
     
 	lienzo.title("User")
+	
+	lienzo.iconbitmap("viajes.ico")
     
     #recuadro destino
 	groupbox = LabelFrame(lienzo, text="Seleccione el destino", padx=5, pady=5)
@@ -40,18 +42,33 @@ def ventana_user(lienzo):
     
 	select_destino = tk.StringVar()
     
-	listaPaquetes = []
+	listaPaquetes = {}
     
 	destinosSQL = sql.listarPaquetes()
     
 	for i in destinosSQL:
-		listaPaquetes.append(i.destino)
+		listaPaquetes[i.destino] = i.id_paquete
+		
+	nombrePaquetes = list(listaPaquetes.keys())
     
-	combo = ttk.Combobox(lienzo, values= listaPaquetes,width=30, textvariable=select_destino).grid(row=1, column=1)
+	combo = ttk.Combobox(lienzo, values= nombrePaquetes,width=30, textvariable=select_destino)
+	combo.grid(row=1, column=1)
 	
-	#paqueteSeleccionado = combo.bind("<<ComboboxSelected>>", sql.buscarPaquetePorId(combo.get()))
 	
-	#print(paqueteSeleccionado.destino)
+	def buscarPaqueteSeleccionado(event):
+		
+		destino = combo.get()
+		
+		destinoConId = listaPaquetes[destino]
+		
+		infoPaquete = sql.buscarPaquetePorId(destinoConId)
+		
+		print("El paquete seleccionado viaja a: \n", infoPaquete.destino, "\n Y tiene un coste de: \n", infoPaquete.precio)
+		
+		return infoPaquete
+		
+	combo.bind("<<ComboboxSelected>>", lambda event: buscarPaqueteSeleccionado(event))
+	
 	lienzo.mainloop()
     
 	return
@@ -65,6 +82,8 @@ def ventana_adm(lienzo):
     lienzo = tk.Tk()
     lienzo.geometry("550x200")
     lienzo.title("Administrador")
+    
+    lienzo.iconbitmap("viajes.ico")
     groupbox = LabelFrame(lienzo, text="Seleccione una opcion", padx=50, pady=5)
     groupbox.grid(row=1, column=0, padx=0, pady=0)
 
