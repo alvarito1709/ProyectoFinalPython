@@ -6,8 +6,8 @@ from ClassUser import User
 #parametros para la conexion a la BBDD
 parametros_conexion = (
     r'DRIVER={SQL Server};'
-    #Base de datos EMILIO SERVER=DESKTOP-MM59BEH\SQLEXPRESS DESKTOP-5QHOBD5\SQLEXPRESS
-    r'SERVER=DESKTOP-MM59BEH\SQLEXPRESS;'
+    #Base de datos EMILIO SERVER=DESKTOP-MM59BEH\SQLEXPRESS DESKTOP-MM59BEH\SQLEXPRESS 
+    r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
     r'DATABASE=DB_USUARIOS;'
     r'Trusted_Connection=yes;'
 )
@@ -238,3 +238,7 @@ def modificarPaquete(paquete : Paquete):
 	else:
 		print("El objeto debe ser de tipo Paquete")
 
+
+#paqueteNuevo = Paquete('paqueteMod', 1, 1,9, 2)
+
+#modificarPaquete(paqueteNuevo);

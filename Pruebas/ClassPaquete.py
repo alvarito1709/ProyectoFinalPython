@@ -6,7 +6,7 @@ class Paquete:
 	
 	def __init__(self, destino, duracion, precio, stock, id_paquete = None):
 		
-		self.id_paquete = id_paquete or uuid.uuid4()
+		self.id_paquete = id_paquete 
 		
 		self.destino = destino
 		
