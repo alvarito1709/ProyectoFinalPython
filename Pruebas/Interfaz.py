@@ -12,11 +12,19 @@ from tkinter import *
 import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
+from typing import List, Any
+
 import pyodbc
 
 import sqlConnector as sql
+from ClassPaquete import Paquete, crearPaquete
+
+
 #conecto a la base de datos
 
+
+#paquetenuevo = Paquete('Bariloche',5, 124300.50, 10)
+#sql.paqueteNuevo(paquetenuevo)
 
 
 def ventana_user(lienzo):
@@ -73,8 +81,111 @@ def ventana_user(lienzo):
     
 	return
 
+#ver porque no puede guardar los datos en la base de datos
+def guardarcambios(pack,tree,ventana_mod):
+	sql.modificarPaquete(pack)
+	# Actualizar el Treeview
+	paquetes = sql.listarPaquetes()
+
+	for paquete in paquetes:
+		tree.insert('', 'end', values=(paquete. id_paquete, paquete.destino, paquete.duracion, paquete.precio, paquete.stock, paquete.stock))
+	ventana_mod.destroy()  # Cerrar la ventana de modificación
+
+def modificar_paquete(tree, paquetes):
+	seleccion = tree.selection()  # Obtener la fila seleccionada
+	if seleccion:
+		item = tree.item(seleccion)
+		id_paquete = item['text']  # Obtener ID del paquete
+		valores = item['values']  # Obtener los demás valores
+
+		ventana_mod = tk.Toplevel()
+		ventana_mod.title("Modificar Paquete")
+		ventana_mod.geometry("400x600")
+
+		# Crear etiquetas y entradas para cada parámetro
+		tk.Label(ventana_mod, text="ID Paquete").pack(pady=5)
+		label_id = tk.Label(ventana_mod, text=id_paquete, relief="sunken")
+		label_id.pack(pady=5)
+
+		tk.Label(ventana_mod, text="Destino").pack(pady=5)
+		entry_destino = ttk.Entry(ventana_mod, textvariable=valores[1])
+		entry_destino.insert(0, valores[1])  # Precargar valor
+		entry_destino.pack(pady=5)
+
+		tk.Label(ventana_mod, text="Duración").pack(pady=5)
+		entry_duracion = ttk.Entry(ventana_mod, textvariable=valores[2])
+		entry_duracion.insert(0, valores[2])  # Precargar valor
+		entry_duracion.pack(pady=5)
+
+		tk.Label(ventana_mod, text="Precio").pack(pady=5)
+		entry_precio = ttk.Entry(ventana_mod, textvariable=valores[3])
+		entry_precio.insert(0, valores[3])  # Precargar valor
+		entry_precio.pack(pady=5)
+
+		tk.Label(ventana_mod, text="Stock").pack(pady=5)
+		entry_stock = ttk.Entry(ventana_mod, textvariable=valores[4])
+		entry_stock.insert(0, valores[4])  # Precargar valor
+		entry_stock.pack(pady=5)
+
+		pack = crearPaquete(entry_destino.get(), entry_duracion.get(), entry_precio.get(), entry_stock.get())
+		#ver porque no sale el boton(solucionado)
+		boton = tk.Button(ventana_mod, text="Modificar paquete",
+						  command=lambda: guardarcambios(pack, tree, ventana_mod))
+		boton.pack(pady=10)
 
 
+
+
+def ventana_modpaq(lienzo):
+	lienzo.destroy()
+	lienzo = tk.Tk()
+	lienzo.geometry("1000x600")
+	lienzo.pack_propagate(False)
+	lienzo.resizable(True, True)
+	lienzo.title("Modificar paquete")
+	#crea el treeview
+	tree = ttk.Treeview(lienzo, columns=('id_paquete','Destino', 'Duracion', 'Precio', 'Stock'), show='headings')
+	tree.heading('id_paquete', text='id_paquete')
+	tree.heading('Destino', text='Destino')
+	tree.heading('Duracion', text='Duracion')
+	tree.heading('Precio', text='Precio')
+	tree.heading('Stock', text='Stock')
+
+	tree.pack(side='top', fill='both', expand=True)
+
+	# Crear una barra de desplazamiento
+	scrollbar = ttk.Scrollbar(lienzo, orient='vertical', command=tree.yview)
+	tree.configure(yscroll=scrollbar.set)
+	scrollbar.pack(side='right', fill='y')
+
+
+
+	paquetes = sql.listarPaquetes()
+
+	for paquete in paquetes:
+		tree.insert('', 'end', values=(paquete.id_paquete, paquete.destino, paquete.duracion, paquete.precio, paquete.stock, paquete.stock))
+
+	# Crear un botón que actúa sobre la fila seleccionada
+	boton = tk.Button(lienzo, text="Modificar paquete", command=lambda: modificar_paquete(tree,paquetes))
+	boton.pack(pady=10)
+
+	lienzo.mainloop()
+
+
+
+
+
+def ventana_addpaq(lienzo):
+	lienzo.destroy()
+	lienzo = tk.Tk()
+	lienzo.geometry("550x200")
+	lienzo.title("Agregar paquete")
+
+def ventana_delpaq(lienzo):
+	lienzo.destroy()
+	lienzo = tk.Tk()
+	lienzo.geometry("550x200")
+	lienzo.title("Eliminar paquete")
 
 
 def ventana_adm(lienzo):
@@ -87,9 +198,13 @@ def ventana_adm(lienzo):
     groupbox = LabelFrame(lienzo, text="Seleccione una opcion", padx=50, pady=5)
     groupbox.grid(row=1, column=0, padx=0, pady=0)
 
-    Button(groupbox, text="Editar Destino", width=20).grid(row=1, column=0)
-    Button(groupbox, text="Agregar Destino", width=20).grid(row=1, column=1)
-    Button(groupbox, text="Actualizar Destino", width=20).grid(row=1, column=2)
+    Button(groupbox, text="Editar Paquete",command=lambda: ventana_modpaq(lienzo), width=20).grid(row=1, column=0)
+    Button(groupbox, text="Agregar Paquete",command=lambda: ventana_addpaq(lienzo), width=20).grid(row=1, column=1)
+    Button(groupbox, text="Eliminar Paquete",command=lambda: ventana_delpaq(lienzo), width=20).grid(row=1, column=2)
+
+
+
+
     
 def checkLogin(lienzo, username, password):
 	
