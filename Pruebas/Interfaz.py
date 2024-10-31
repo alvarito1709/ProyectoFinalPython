@@ -172,20 +172,44 @@ def ventana_modpaq(lienzo):
 	lienzo.mainloop()
 
 
-
-
-
-def ventana_addpaq(lienzo):
-	lienzo.destroy()
-	lienzo = tk.Tk()
-	lienzo.geometry("550x200")
-	lienzo.title("Agregar paquete")
-
 def ventana_delpaq(lienzo):
 	lienzo.destroy()
 	lienzo = tk.Tk()
-	lienzo.geometry("550x200")
+	lienzo.geometry("550x400")
 	lienzo.title("Eliminar paquete")
+
+	# Treeview para mostrar paquetes
+	tree = ttk.Treeview(lienzo, columns=('id_paquete', 'Destino', 'Duracion', 'Precio', 'Stock'), show='headings')
+	tree.heading('id_paquete', text='ID Paquete')
+	tree.heading('Destino', text='Destino')
+	tree.heading('Duracion', text='Duración')
+	tree.heading('Precio', text='Precio')
+	tree.heading('Stock', text='Stock')
+	tree.pack(side='top', fill='both', expand=True)
+
+	# Rellenar el Treeview con los paquetes de la base de datos
+	paquetes = sql.listarPaquetes()
+	for paquete in paquetes:
+		tree.insert('', 'end',
+					values=(paquete.id_paquete, paquete.destino, paquete.duracion, paquete.precio, paquete.stock))
+
+	# Función para manejar la eliminación
+	def eliminar_paquete_seleccionado():
+		seleccion = tree.selection()
+		if seleccion:
+			item = tree.item(seleccion)
+			paquete_id = item['values'][0]
+
+			# Confirmación
+			if messagebox.askyesno("Confirmación", f"¿Está seguro de eliminar el paquete ID {paquete_id}?"):
+				sql.eliminarPaquete(paquete_id)
+				tree.delete(seleccion)  # Eliminar del Treeview
+
+	# Botón para eliminar el paquete seleccionado
+	boton = tk.Button(lienzo, text="Eliminar paquete seleccionado", command=eliminar_paquete_seleccionado)
+	boton.pack(pady=10)
+
+	lienzo.mainloop()
 
 
 def ventana_adm(lienzo):
