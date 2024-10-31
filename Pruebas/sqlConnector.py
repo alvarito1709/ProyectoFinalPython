@@ -6,8 +6,11 @@ from ClassUser import User
 #parametros para la conexion a la BBDD
 parametros_conexion = (
     r'DRIVER={SQL Server};'
-    #Base de datos EMILIO SERVER=DESKTOP-MM59BEH\SQLEXPRESS DESKTOP-MM59BEH\SQLEXPRESS 
-    r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
+    #Base de datos EMILIO SERVER=DESKTOP-MM59BEH\SQLEXPRESS DESKTOP-MM59BEH\SQLEXPRESS
+	
+	#Base de datos JUANk 
+	r'SERVER=DESKTOP-T6Q6QH5\SQLEXPRESS;'
+    #r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
     r'DATABASE=DB_USUARIOS;'
     r'Trusted_Connection=yes;'
 )
@@ -239,6 +242,23 @@ def modificarPaquete(paquete : Paquete):
 
 	else:
 		print("El objeto debe ser de tipo Paquete")
+
+
+def eliminarPaquete(paqueteId):
+    try:
+        conexion = pyodbc.connect(parametros_conexion)
+        cursor = conexion.cursor()
+
+
+        query = "DELETE FROM paquetes WHERE id_paquete = ?"
+        cursor.execute(query, (paqueteId,))
+        conexion.commit()
+        cursor.close()
+        conexion.close()
+        print(f"Paquete con ID {paqueteId} eliminado correctamente.")
+    except pyodbc.Error as err:
+        print("Error al eliminar el paquete:", err)
+
 
 
 #paqueteNuevo = Paquete('paqueteMod', 1, 1,9, 3)
