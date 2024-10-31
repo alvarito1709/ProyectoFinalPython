@@ -309,8 +309,50 @@ def ventana_adm(lienzo):
     Button(groupbox, text="Agregar Paquete",command=lambda: ventana_addpaq(lienzo), width=20).grid(row=1, column=1)
     Button(groupbox, text="Eliminar Paquete",command=lambda: ventana_delpaq(lienzo), width=20).grid(row=1, column=2)
     Button(groupbox, text="Agregar Usuario", command=lambda: ventana_adduser(lienzo), width=20).grid(row=3, column=0)
+def ventana_adduser(lienzo):
+    lienzo.destroy()
+    lienzo = tk.Tk()
+    lienzo.geometry("550x400")
+    lienzo.title("Agregar Usuario")
+   
+    # Crear etiquetas y campos de entrada
+    tk.Label(lienzo, text="Nombre de Usuario").pack(pady=5)
+    entry_usuario = ttk.Entry(lienzo)
+    entry_usuario.pack(pady=5)
 
 
+    tk.Label(lienzo, text="Contraseña").pack(pady=5)
+    entry_contrasena = ttk.Entry(lienzo, show='*')
+    entry_contrasena.pack(pady=5)
+
+
+    tk.Label(lienzo, text="Email").pack(pady=5)
+    entry_email = ttk.Entry(lienzo)
+    entry_email.pack(pady=5)
+
+
+    tk.Label(lienzo, text="Rol (1 para admin, 0 para cliente)").pack(pady=5)
+    entry_rol = ttk.Entry(lienzo)
+    entry_rol.pack(pady=5)
+
+
+    # Función para enviar datos al conector SQL
+    def agregar_usuario():
+        usuario = entry_usuario.get()
+        contrasena = entry_contrasena.get()
+        email = entry_email.get()
+        rol = int(entry_rol.get())
+       
+        # Llamada a la función de sqlConnector para crear un usuario
+        nuevo_usuario = User(usuario, contrasena, rol, email)
+        sql.usuarioNuevo(nuevo_usuario)
+        messagebox.showinfo("Éxito", f"Usuario {usuario} agregado con éxito")
+        lienzo.destroy()
+
+
+    # Botón para agregar usuario
+    tk.Button(lienzo, text="Agregar Usuario", command=agregar_usuario).pack(pady=10)
+    lienzo.mainloop()
 
     
 def checkLogin(lienzo, username, password):
@@ -371,47 +413,3 @@ class LoginUsuario:
 
 	login()
 
-def ventana_adduser(lienzo):
-    lienzo.destroy()
-    lienzo = tk.Tk()
-    lienzo.geometry("550x400")
-    lienzo.title("Agregar Usuario")
-   
-    # Crear etiquetas y campos de entrada
-    tk.Label(lienzo, text="Nombre de Usuario").pack(pady=5)
-    entry_usuario = ttk.Entry(lienzo)
-    entry_usuario.pack(pady=5)
-
-
-    tk.Label(lienzo, text="Contraseña").pack(pady=5)
-    entry_contrasena = ttk.Entry(lienzo, show='*')
-    entry_contrasena.pack(pady=5)
-
-
-    tk.Label(lienzo, text="Email").pack(pady=5)
-    entry_email = ttk.Entry(lienzo)
-    entry_email.pack(pady=5)
-
-
-    tk.Label(lienzo, text="Rol (1 para admin, 0 para cliente)").pack(pady=5)
-    entry_rol = ttk.Entry(lienzo)
-    entry_rol.pack(pady=5)
-
-
-    # Función para enviar datos al conector SQL
-    def agregar_usuario():
-        usuario = entry_usuario.get()
-        contrasena = entry_contrasena.get()
-        email = entry_email.get()
-        rol = int(entry_rol.get())
-       
-        # Llamada a la función de sqlConnector para crear un usuario
-        nuevo_usuario = User(usuario, contrasena, rol, email)
-        sql.usuarioNuevo(nuevo_usuario)
-        messagebox.showinfo("Éxito", f"Usuario {usuario} agregado con éxito")
-        lienzo.destroy()
-
-
-    # Botón para agregar usuario
-    tk.Button(lienzo, text="Agregar Usuario", command=agregar_usuario).pack(pady=10)
-    lienzo.mainloop()
