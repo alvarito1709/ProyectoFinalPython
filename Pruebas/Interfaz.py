@@ -171,6 +171,56 @@ def ventana_modpaq(lienzo):
 
 	lienzo.mainloop()
 
+def ventana_addpaq(lienzo):
+    lienzo.destroy()
+    lienzo = tk.Tk()
+    lienzo.geometry("550x300")
+    lienzo.title("Agregar Paquete")
+
+
+    # Etiquetas y entradas para los datos del nuevo paquete
+    tk.Label(lienzo, text="Destino").grid(row=0, column=0, padx=10, pady=10)
+    entry_destino = tk.Entry(lienzo, width=30)
+    entry_destino.grid(row=0, column=1, padx=10, pady=10)
+
+
+    tk.Label(lienzo, text="Duración (días)").grid(row=1, column=0, padx=10, pady=10)
+    entry_duracion = tk.Entry(lienzo, width=30)
+    entry_duracion.grid(row=1, column=1, padx=10, pady=10)
+
+
+    tk.Label(lienzo, text="Precio").grid(row=2, column=0, padx=10, pady=10)
+    entry_precio = tk.Entry(lienzo, width=30)
+    entry_precio.grid(row=2, column=1, padx=10, pady=10)
+
+
+    tk.Label(lienzo, text="Stock").grid(row=3, column=0, padx=10, pady=10)
+    entry_stock = tk.Entry(lienzo, width=30)
+    entry_stock.grid(row=3, column=1, padx=10, pady=10)
+
+
+    # Función para agregar paquete
+    def agregar_paquete():
+        destino = entry_destino.get()
+        duracion = int(entry_duracion.get())
+        precio = float(entry_precio.get())
+        stock = int(entry_stock.get())
+
+
+        nuevo_paquete = Paquete(destino, duracion, precio, stock)
+       
+        # Llama a la función en sqlConnector para agregar el paquete
+        sql.paqueteNuevo(nuevo_paquete)
+        messagebox.showinfo("Éxito", f"Paquete a {destino} agregado exitosamente.")
+        lienzo.destroy()
+
+
+    # Botón para agregar el paquete
+    boton_agregar = tk.Button(lienzo, text="Agregar Paquete", command=agregar_paquete)
+    boton_agregar.grid(row=4, column=0, columnspan=2, pady=20)
+
+
+    lienzo.mainloop()
 
 def ventana_delpaq(lienzo):
 	lienzo.destroy()
