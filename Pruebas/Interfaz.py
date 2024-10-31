@@ -81,26 +81,20 @@ def ventana_user(lienzo):
     
 	return
 
-#ver porque no puede guardar los datos en la base de datos
-def guardarcambios(pack,tree,ventana_mod):
-	sql.modificarPaquete(pack)
-	# Actualizar el Treeview
-	paquetes = sql.listarPaquetes()
 
-	for paquete in paquetes:
-		tree.insert('', 'end', values=(paquete. id_paquete, paquete.destino, paquete.duracion, paquete.precio, paquete.stock, paquete.stock))
-	ventana_mod.destroy()  # Cerrar la ventana de modificación
 
 def modificar_paquete(tree, paquetes):
-	seleccion = tree.selection()  # Obtener la fila seleccionada
+	seleccion = tree.selection()[0]  # Obtener la fila seleccionada
 	if seleccion:
 		item = tree.item(seleccion)
-		id_paquete = item['text']  # Obtener ID del paquete
+		
 		valores = item['values']  # Obtener los demás valores
+		id_paquete = valores[0]  # Obtener ID del paquete
 
 		ventana_mod = tk.Toplevel()
 		ventana_mod.title("Modificar Paquete")
 		ventana_mod.geometry("400x600")
+
 
 		# Crear etiquetas y entradas para cada parámetro
 		tk.Label(ventana_mod, text="ID Paquete").pack(pady=5)
@@ -108,30 +102,67 @@ def modificar_paquete(tree, paquetes):
 		label_id.pack(pady=5)
 
 		tk.Label(ventana_mod, text="Destino").pack(pady=5)
-		entry_destino = ttk.Entry(ventana_mod, textvariable=valores[1])
+		entry_destino = ttk.Entry(ventana_mod)
 		entry_destino.insert(0, valores[1])  # Precargar valor
 		entry_destino.pack(pady=5)
 
 		tk.Label(ventana_mod, text="Duración").pack(pady=5)
-		entry_duracion = ttk.Entry(ventana_mod, textvariable=valores[2])
+		entry_duracion = ttk.Entry(ventana_mod)
 		entry_duracion.insert(0, valores[2])  # Precargar valor
 		entry_duracion.pack(pady=5)
 
 		tk.Label(ventana_mod, text="Precio").pack(pady=5)
-		entry_precio = ttk.Entry(ventana_mod, textvariable=valores[3])
+		entry_precio = ttk.Entry(ventana_mod)
 		entry_precio.insert(0, valores[3])  # Precargar valor
 		entry_precio.pack(pady=5)
 
 		tk.Label(ventana_mod, text="Stock").pack(pady=5)
-		entry_stock = ttk.Entry(ventana_mod, textvariable=valores[4])
+		entry_stock = ttk.Entry(ventana_mod)
 		entry_stock.insert(0, valores[4])  # Precargar valor
 		entry_stock.pack(pady=5)
-
-		pack = crearPaquete(entry_destino.get(), entry_duracion.get(), entry_precio.get(), entry_stock.get())
+		
+		
+		
 		#ver porque no sale el boton(solucionado)
 		boton = tk.Button(ventana_mod, text="Modificar paquete",
-						  command=lambda: guardarcambios(pack, tree, ventana_mod))
+						  command=lambda: guardarcambios())
 		boton.pack(pady=10)
+		
+		#ver porque no puede guardar los datos en la base de datos
+		def guardarcambios():
+			
+			try:
+				
+				destino = entry_destino.get()
+				duracion = int(entry_duracion.get())
+				precio = float(entry_precio.get())
+				stock = int(entry_stock.get())
+				idPack = int(id_paquete)
+
+				pack = Paquete(destino, duracion, precio, stock, idPack)
+	
+
+				sql.modificarPaquete(pack)
+				
+			except ValueError as error:
+				
+				messagebox.showerror({error}, 'Por favor ingrese valores validos')
+				
+			except Exception as exc: 
+				
+				messagebox.showerror('Error al guardar los cambios ',{exc})
+				
+			
+			# Actualizar el Treeview
+			paquetes = sql.listarPaquetes()
+			
+			for item in tree.get_children():
+				
+				tree.delete(item)
+
+			for paquete in paquetes:
+				tree.insert('', 'end', values=(paquete. id_paquete, paquete.destino, paquete.duracion, paquete.precio, paquete.stock, paquete.stock))
+			ventana_mod.destroy()  # Cerrar la ventana de modificación
 
 
 

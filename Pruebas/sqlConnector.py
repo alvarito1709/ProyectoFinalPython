@@ -7,7 +7,7 @@ from ClassUser import User
 parametros_conexion = (
     r'DRIVER={SQL Server};'
     #Base de datos EMILIO SERVER=DESKTOP-MM59BEH\SQLEXPRESS DESKTOP-MM59BEH\SQLEXPRESS 
-    r'SERVER=DESKTOP-MM59BEH\SQLEXPRESS;'
+    r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
     r'DATABASE=DB_USUARIOS;'
     r'Trusted_Connection=yes;'
 )
@@ -207,6 +207,8 @@ def modificarPaquete(paquete : Paquete):
 
 	#Verifica que la instancia sea del tipo correcto
 	if isinstance(paquete, Paquete):
+		
+		print('paquete: ', paquete.destino, 'duracion: ', paquete.duracion, 'precio: ', 'id: ', paquete.id_paquete)
 
 		try:
 			conexion = pyodbc.connect(parametros_conexion)
@@ -239,21 +241,6 @@ def modificarPaquete(paquete : Paquete):
 		print("El objeto debe ser de tipo Paquete")
 
 
-def eliminarPaquete(paqueteId):
-	try:
-		conexion = pyodbc.connect(parametros_conexion)
-		cursor = conexion.cursor()
-
-		query = "DELETE FROM paquetes WHERE id_paquete = ?"
-		cursor.execute(query, (paqueteId,))
-		conexion.commit()
-		cursor.close()
-		conexion.close()
-		print(f"Paquete con ID {paqueteId} eliminado correctamente.")
-	except pyodbc.Error as err:
-		print("Error al eliminar el paquete:", err)
-
-
-#paqueteNuevo = Paquete('paqueteMod', 1, 1,9, 2)
+#paqueteNuevo = Paquete('paqueteMod', 1, 1,9, 3)
 
 #modificarPaquete(paqueteNuevo);
