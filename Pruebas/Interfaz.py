@@ -39,7 +39,7 @@ def ventana_user(lienzo):
     
 	lienzo.title("User")
 	
-	lienzo.iconbitmap("viajes.ico")
+
     
     #recuadro destino
 	groupbox = LabelFrame(lienzo, text="Seleccione el destino", padx=5, pady=5)
@@ -301,14 +301,16 @@ def ventana_adm(lienzo):
     lienzo.geometry("550x200")
     lienzo.title("Administrador")
     
-    lienzo.iconbitmap("viajes.ico")
+
     groupbox = LabelFrame(lienzo, text="Seleccione una opcion", padx=50, pady=5)
     groupbox.grid(row=1, column=0, padx=0, pady=0)
 
     Button(groupbox, text="Editar Paquete",command=lambda: ventana_modpaq(lienzo), width=20).grid(row=1, column=0)
     Button(groupbox, text="Agregar Paquete",command=lambda: ventana_addpaq(lienzo), width=20).grid(row=1, column=1)
     Button(groupbox, text="Eliminar Paquete",command=lambda: ventana_delpaq(lienzo), width=20).grid(row=1, column=2)
-    Button(groupbox, text="Agregar Usuario", command=lambda: ventana_adduser(lienzo), width=20).grid(row=3, column=0)
+    Button(groupbox, text="Agregar Usuario", command=lambda: ventana_adduser(lienzo), width=20).grid(row=4, column=0)
+    Button(groupbox, text="Eliminar Usuario", command=lambda: ventana_deluser(lienzo), width=20).grid(row=4, column=1)
+
 def ventana_adduser(lienzo):
     lienzo.destroy()
     lienzo = tk.Tk()
@@ -354,7 +356,39 @@ def ventana_adduser(lienzo):
     tk.Button(lienzo, text="Agregar Usuario", command=agregar_usuario).pack(pady=10)
     lienzo.mainloop()
 
-    
+
+def ventana_deluser(lienzo):
+    lienzo.destroy()
+    lienzo = tk.Tk()
+    lienzo.geometry("550x400")
+    lienzo.title("Eliminar Usuario")
+
+    tree = ttk.Treeview(lienzo, columns=('ID', 'Usuario', 'Rol', 'Email'), show='headings')
+    tree.heading('ID', text='ID')
+    tree.heading('Usuario', text='Usuario')
+    tree.heading('Rol', text='Rol')
+    tree.heading('Email', text='Email')
+    tree.pack(side='top', fill='both', expand=True)
+
+    usuarios = sql.listarUsuarios()
+    for usuario in usuarios:
+        tree.insert('', 'end', values=(usuario.id, usuario.usuario, usuario.rol, usuario.email))
+
+    def eliminar_usuario_seleccionado():
+        seleccion = tree.selection()
+        if seleccion:
+            item = tree.item(seleccion)
+            usuario_id = item['values'][0]
+            if messagebox.askyesno("Confirmación", f"¿Está seguro de eliminar el usuario {item['values'][1]}?"):
+                sql.eliminarUsuario(usuario_id)
+                tree.delete(seleccion)
+
+    boton = tk.Button(lienzo, text="Eliminar usuario seleccionado", command=eliminar_usuario_seleccionado)
+    boton.pack(pady=10)
+
+    lienzo.mainloop()
+
+
 def checkLogin(lienzo, username, password):
 	
 	usuario = sql.validarusuario(username, password)
@@ -378,7 +412,7 @@ class LoginUsuario:
 			lienzo.geometry("800x400")
 			lienzo.title("Login")
 			
-			lienzo.iconbitmap("viajes.ico")
+
 
             # recuadro de Login
             # recuadro de Login

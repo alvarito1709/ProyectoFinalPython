@@ -58,6 +58,29 @@ def validarusuario(user, pw):
 		print("Error al conectar a la base de datos:", error)
 		
 
+def listarUsuarios():
+    try:
+        conexion = pyodbc.connect(parametros_conexion)
+
+        cursor = conexion.cursor()
+        
+        query = "SELECT id, usuario, contrasena, rol, email FROM usuarios"  # Ajusta el nombre de la tabla si es necesario
+        cursor.execute(query)
+
+        listaUsuarios = []
+
+        # Mapeo de resultados a objetos User
+        for index in cursor:
+            usuario = User(index.usuario, index.contrasena, index.rol, index.email)
+            usuario.id = index.id  # Usamos el ID de la base de datos
+            listaUsuarios.append(usuario)
+
+        return listaUsuarios
+
+    except pyodbc.Error as err:
+        print("Error al hacer la consulta", err)
+
+
 def usuarioNuevo(user : User):
 	
 	if isinstance(user, User):
@@ -93,6 +116,28 @@ def usuarioNuevo(user : User):
 		print("El objeto tiene que ser de tipo User")
 		
 #Funcion para listar todos los paquetes en la base de datos (RETORNA LISTA DE OBJETOS PAQUETE)
+
+
+def eliminarUsuario(usuario_id):
+    try:
+        conexion = pyodbc.connect(parametros_conexion)
+        cursor = conexion.cursor()
+
+        query = "DELETE FROM usuarios WHERE id = ?"
+        cursor.execute(query, usuario_id)
+        conexion.commit()
+
+        print(f"Usuario con ID {usuario_id} eliminado correctamente.")
+        
+    except pyodbc.Error as err:
+        print("Error al intentar eliminar el usuario:", err)
+
+    finally:
+        cursor.close()
+        conexion.close()
+
+
+
 
 def listarPaquetes():
 
