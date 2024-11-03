@@ -201,6 +201,9 @@ def ventana_modpaq(lienzo):
 	# Crear un botón que actúa sobre la fila seleccionada
 	boton = tk.Button(lienzo, text="Modificar paquete", command=lambda: modificar_paquete(tree,paquetes))
 	boton.pack(pady=10)
+	
+	boton = tk.Button(lienzo, text="Menú", command=lambda: ventana_adm(lienzo))
+	boton.pack(pady=10)
 
 	lienzo.mainloop()
 
@@ -245,12 +248,16 @@ def ventana_addpaq(lienzo):
         # Llama a la función en sqlConnector para agregar el paquete
         sql.paqueteNuevo(nuevo_paquete)
         messagebox.showinfo("Éxito", f"Paquete a {destino} agregado exitosamente.")
-        lienzo.destroy()
+        ventana_adm(lienzo)
 
 
     # Botón para agregar el paquete
     boton_agregar = tk.Button(lienzo, text="Agregar Paquete", command=agregar_paquete)
     boton_agregar.grid(row=4, column=0, columnspan=2, pady=20)
+    
+    
+    boton = tk.Button(lienzo, text="Menú", command = lambda: ventana_adm(lienzo))
+    boton.grid(row=4, column=2, columnspan=2, pady=20)
 
 
     lienzo.mainloop()
@@ -291,6 +298,9 @@ def ventana_delpaq(lienzo):
 	# Botón para eliminar el paquete seleccionado
 	boton = tk.Button(lienzo, text="Eliminar paquete seleccionado", command=eliminar_paquete_seleccionado)
 	boton.pack(pady=10)
+	
+	boton = tk.Button(lienzo, text="Menú", command=lambda: ventana_adm(lienzo))
+	boton.pack(pady=10)
 
 	lienzo.mainloop()
 
@@ -315,7 +325,13 @@ def ventana_adm(lienzo):
     Button(groupbox, text="Eliminar Usuario", command=lambda: ventana_deluser(lienzo), width=20).grid(row=4, column=2)
 
 def modificar_usuario(tree):
-    seleccion = tree.selection()[0]  # Obtener la fila seleccionada
+	
+    try:
+        seleccion = tree.selection()[0]  # Obtener la fila seleccionada
+    
+    except: 
+        messagebox.showerror("error", "Debe seleccionar un usuario")
+		
     if seleccion:
         item = tree.item(seleccion)
         valores = item['values']  # Obtener los valores del usuario seleccionado
@@ -353,6 +369,8 @@ def modificar_usuario(tree):
         # Botón para guardar cambios
         boton = tk.Button(ventana_mod, text="Guardar Cambios", command=lambda: guardarcambios())
         boton.pack(pady=10)
+        
+
 
         def guardarcambios():
             try:
@@ -406,6 +424,9 @@ def ventana_moduser(lienzo):
 		# Crear un botón que actúa sobre el usuario seleccionado
         boton = tk.Button(lienzo, text="Modificar Usuario", command=lambda: modificar_usuario(tree))
         boton.pack(pady=10)
+        
+        botonMenu = tk.Button(lienzo, text="Menú", command = lambda: ventana_adm(lienzo))
+        botonMenu.pack(pady=20)
 
         lienzo.mainloop()
 
@@ -454,6 +475,8 @@ def ventana_adduser(lienzo):
 
     # Botón para agregar usuario
     tk.Button(lienzo, text="Agregar Usuario", command=agregar_usuario).pack(pady=10)
+    
+    tk.Button(lienzo, text="Menú", command= lambda: ventana_adm(lienzo)).pack(pady=10)
     lienzo.mainloop()
 
 
@@ -485,6 +508,9 @@ def ventana_deluser(lienzo):
 
     boton = tk.Button(lienzo, text="Eliminar usuario seleccionado", command=eliminar_usuario_seleccionado)
     boton.pack(pady=10)
+    
+    botonMenu = tk.Button(lienzo, text="Menu", command= lambda: ventana_adm(lienzo))
+    botonMenu.pack(pady =10)
 
     lienzo.mainloop()
 

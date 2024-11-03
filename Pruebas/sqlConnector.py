@@ -9,8 +9,8 @@ parametros_conexion = (
     #Base de datos EMILIO SERVER=DESKTOP-MM59BEH\SQLEXPRESS DESKTOP-MM59BEH\SQLEXPRESS
 	
 	#Base de datos JUANk 
-	r'SERVER=DESKTOP-T6Q6QH5\SQLEXPRESS;'
-    #r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
+	#r'SERVER=DESKTOP-T6Q6QH5\SQLEXPRESS;'
+    r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
     r'DATABASE=DB_USUARIOS;'
     r'Trusted_Connection=yes;'
 )
@@ -63,14 +63,14 @@ def listarUsuarios():
 
         cursor = conexion.cursor()
         
-        query = "SELECT id, usuario, contrasena, rol, email FROM usuarios"  # Ajusta el nombre de la tabla si es necesario
+        query = "SELECT id, usuario, contraseña, rol, email FROM usuarios"  # Ajusta el nombre de la tabla si es necesario
         cursor.execute(query)
 
         listaUsuarios = []
 
         # Mapeo de resultados a objetos User
         for index in cursor:
-            usuario = User(index.usuario, index.contrasena, index.rol, index.email)
+            usuario = User(index.usuario, index.contraseña, index.rol, index.email)
             usuario.id = index.id  # Usamos el ID de la base de datos
             listaUsuarios.append(usuario)
 
@@ -327,3 +327,5 @@ def eliminarPaquete(paqueteId):
 #paqueteNuevo = Paquete('paqueteMod', 1, 1,9, 3)
 
 #modificarPaquete(paqueteNuevo);
+
+	
