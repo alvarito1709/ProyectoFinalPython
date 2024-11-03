@@ -64,6 +64,10 @@ def ventana_user(lienzo):
 	combo = ttk.Combobox(lienzo, values= nombrePaquetes,width=30, textvariable=select_destino)
 	combo.grid(row=1, column=1)
 	
+	def crearVentanaInfo(infoPaquete):
+		
+		
+	
 	
 	def buscarPaqueteSeleccionado(event):
 		
@@ -75,7 +79,7 @@ def ventana_user(lienzo):
 		
 		print("El paquete seleccionado viaja a: \n", infoPaquete.destino, "\n Y tiene un coste de: \n", infoPaquete.precio)
 		
-		return infoPaquete
+		crearVentanaInfo(infoPaquete)
 		
 	combo.bind("<<ComboboxSelected>>", lambda event: buscarPaqueteSeleccionado(event))
 	

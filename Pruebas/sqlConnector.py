@@ -329,3 +329,28 @@ def eliminarPaquete(paqueteId):
 #modificarPaquete(paqueteNuevo);
 
 	
+	
+def compraDeUsuario(usuarioId, paqueteId):
+	
+	try:
+		conexion = pyodbc.connect(parametros_conexion)
+
+		cursor = conexion.cursor()
+        
+		query = "INSERT INTO compra_cliente VALUES (?,?)"
+		
+		
+		try: 
+			cursor.execute(query,(usuarioId, paqueteId))
+			
+			cursor.commit()
+			
+		except pyodbc.Error as errorcito: 
+			
+			print("Error al insertar la compra", errorcito)
+
+
+	except pyodbc.Error as err:
+		print("Error al conectar la base de datos", err)
+		
+#compraDeUsuario(2,4)
