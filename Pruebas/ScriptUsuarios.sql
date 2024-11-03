@@ -15,15 +15,15 @@ BEGIN
     CREATE TABLE usuarios (
         id INT IDENTITY(1,1) PRIMARY KEY,
         usuario NVARCHAR(50),
-        contraseña NVARCHAR(50),
-        rol BIT,
+        contraseï¿½a NVARCHAR(50),
+        rol INT,
         email NVARCHAR(100)
     );
 END
 GO
 
 -- Insertar 20 registros de ejemplo
-INSERT INTO usuarios(usuario, contraseña, rol, email) VALUES
+INSERT INTO usuarios(usuario, contraseï¿½a, rol, email) VALUES
 ('Pepito', '123', '1', 'juan@example.com'),
 ('Fulano', '12345', '0', 'maria@example.com'),
 ('Carlos', 'perro', '0', 'carlos@example.com'),

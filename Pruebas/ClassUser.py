@@ -2,7 +2,7 @@ import uuid
 
 class User:
 
-	def __init__(self, usuario: str, contrasena: str, rol: int, email: str, id: str = None):
+	def __init__(self, usuario: str, contrasena: str, rol: int, email: str, id = None):
 		
 		self.id = uuid.uuid4()
 		
@@ -10,7 +10,7 @@ class User:
 		
 		self.contrasena = contrasena
 		
-		self.rol = 1 if rol == 1 else 2
+		self.rol = rol
 		
 		self.email = email
 		

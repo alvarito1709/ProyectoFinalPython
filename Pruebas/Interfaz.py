@@ -308,8 +308,108 @@ def ventana_adm(lienzo):
     Button(groupbox, text="Editar Paquete",command=lambda: ventana_modpaq(lienzo), width=20).grid(row=1, column=0)
     Button(groupbox, text="Agregar Paquete",command=lambda: ventana_addpaq(lienzo), width=20).grid(row=1, column=1)
     Button(groupbox, text="Eliminar Paquete",command=lambda: ventana_delpaq(lienzo), width=20).grid(row=1, column=2)
-    Button(groupbox, text="Agregar Usuario", command=lambda: ventana_adduser(lienzo), width=20).grid(row=4, column=0)
-    Button(groupbox, text="Eliminar Usuario", command=lambda: ventana_deluser(lienzo), width=20).grid(row=4, column=1)
+    
+    
+    Button(groupbox, text="Editar Usuario", command=lambda: ventana_moduser(lienzo), width=20).grid(row=4, column=0)
+    Button(groupbox, text="Agregar Usuario", command=lambda: ventana_adduser(lienzo), width=20).grid(row=4, column=1)
+    Button(groupbox, text="Eliminar Usuario", command=lambda: ventana_deluser(lienzo), width=20).grid(row=4, column=2)
+
+def modificar_usuario(tree):
+    seleccion = tree.selection()[0]  # Obtener la fila seleccionada
+    if seleccion:
+        item = tree.item(seleccion)
+        valores = item['values']  # Obtener los valores del usuario seleccionado
+        usuario_id = valores[0]  # ID del usuario
+
+        ventana_mod = tk.Toplevel()
+        ventana_mod.title("Modificar Usuario")
+        ventana_mod.geometry("400x400")
+
+        # Crear etiquetas y entradas para cada campo del usuario
+        tk.Label(ventana_mod, text="ID Usuario").pack(pady=5)
+        label_id = tk.Label(ventana_mod, text=usuario_id, relief="sunken")
+        label_id.pack(pady=5)
+
+        tk.Label(ventana_mod, text="Nombre de Usuario").pack(pady=5)
+        entry_usuario = ttk.Entry(ventana_mod)
+        entry_usuario.insert(0, valores[1])  # Precargar valor
+        entry_usuario.pack(pady=5)
+
+        tk.Label(ventana_mod, text="Contraseña").pack(pady=5)
+        entry_contrasena = ttk.Entry(ventana_mod, show='*')
+        entry_contrasena.insert(0, valores[2])  # Precargar valor
+        entry_contrasena.pack(pady=5)
+
+        tk.Label(ventana_mod, text="Email").pack(pady=5)
+        entry_email = ttk.Entry(ventana_mod)
+        entry_email.insert(0, valores[4])  # Precargar valor
+        entry_email.pack(pady=5)
+
+        tk.Label(ventana_mod, text="Rol (1 para admin, 0 para cliente)").pack(pady=5)
+        entry_rol = ttk.Entry(ventana_mod)
+        entry_rol.insert(0, valores[3])  # Precargar valor
+        entry_rol.pack(pady=5)
+
+        # Botón para guardar cambios
+        boton = tk.Button(ventana_mod, text="Guardar Cambios", command=lambda: guardarcambios())
+        boton.pack(pady=10)
+
+        def guardarcambios():
+            try:
+                usuario = entry_usuario.get()
+                contrasena = entry_contrasena.get()
+                rol = int(entry_rol.get())
+                email = entry_email.get()
+                user_id = int(usuario_id)
+
+                # Crear objeto User con los datos modificados
+                usuario_modificado = User(usuario, contrasena, rol, email)
+                usuario_modificado.id = user_id
+
+                # Llamada a la función para modificar en la base de datos
+                sql.modificarUsuario(usuario_modificado)
+
+                # Actualizar el Treeview después de la modificación
+                usuarios = sql.listarUsuarios()
+                for item in tree.get_children():
+                    tree.delete(item)
+                for usuario in usuarios:
+                    tree.insert('', 'end', values=(usuario.id, usuario.usuario, usuario.contrasena, usuario.rol, usuario.email))
+
+                ventana_mod.destroy()  # Cerrar la ventana de modificación
+
+            except ValueError as error:
+                messagebox.showerror("Error de Valor", f"Ingrese valores válidos: {error}")
+            except Exception as exc:
+                messagebox.showerror("Error", f"Error al guardar los cambios: {exc}")
+
+def ventana_moduser(lienzo):
+        lienzo.destroy()
+        lienzo = tk.Tk()
+        lienzo.geometry("1000x600")
+        lienzo.title("Modificar Usuario")
+
+		# Crear el Treeview para listar usuarios
+        tree = ttk.Treeview(lienzo, columns=('ID', 'Usuario', 'Contraseña', 'Rol', 'Email'), show='headings')
+        tree.heading('ID', text='ID')
+        tree.heading('Usuario', text='Usuario')
+        tree.heading('Contraseña', text='Contraseña')
+        tree.heading('Rol', text='Rol')
+        tree.heading('Email', text='Email')
+        tree.pack(side='top', fill='both', expand=True)
+
+		# Rellenar el Treeview con los usuarios de la base de datos
+        usuarios = sql.listarUsuarios()
+        for usuario in usuarios:
+            tree.insert('', 'end', values=(usuario.id, usuario.usuario, usuario.contrasena, usuario.rol, usuario.email))
+
+		# Crear un botón que actúa sobre el usuario seleccionado
+        boton = tk.Button(lienzo, text="Modificar Usuario", command=lambda: modificar_usuario(tree))
+        boton.pack(pady=10)
+
+        lienzo.mainloop()
+
+
 
 def ventana_adduser(lienzo):
     lienzo.destroy()

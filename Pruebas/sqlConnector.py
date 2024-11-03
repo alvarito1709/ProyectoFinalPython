@@ -44,7 +44,6 @@ def validarusuario(user, pw):
 				print("Usuario Normal")
 					
 				return "user_cliente"
-			
 		else:
 		
 			return "usuario no encontrado"
@@ -114,6 +113,25 @@ def usuarioNuevo(user : User):
 			
 	else:
 		print("El objeto tiene que ser de tipo User")
+
+
+
+def modificarUsuario(user: User):
+    try:
+        conexion = pyodbc.connect(parametros_conexion)
+        cursor = conexion.cursor()
+
+        # Consulta SQL para actualizar el usuario
+        query = """UPDATE usuarios 
+                   SET usuario = ?, contraseña = ?, rol = ?, email = ? 
+                   WHERE id = ?"""
+        cursor.execute(query, (user.usuario, user.contrasena, user.rol, user.email, user.id))
+        conexion.commit()
+
+    except pyodbc.Error as error:
+        print("Error al modificar el usuario en la base de datos:", error)
+    finally:
+        conexion.close()		
 		
 #Funcion para listar todos los paquetes en la base de datos (RETORNA LISTA DE OBJETOS PAQUETE)
 
