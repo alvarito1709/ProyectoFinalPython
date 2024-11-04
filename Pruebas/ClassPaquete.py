@@ -4,7 +4,7 @@ class Paquete:
 
 	
 	
-	def __init__(self, destino: str, duracion: int, precio : float, stock: int, id_paquete = None):
+	def __init__(self, destino: str, duracion: int, precio : float, stock: int, id_paquete:int = None):
 		
 		self.id_paquete = id_paquete 
 		

@@ -29,7 +29,7 @@ from ClassUser import User
 #sql.paqueteNuevo(paquetenuevo)
 
 
-def ventana_user(lienzo):
+def ventana_user(lienzo, idUsuario):
 	
 	lienzo.destroy()
     
@@ -66,6 +66,43 @@ def ventana_user(lienzo):
 	
 	def crearVentanaInfo(infoPaquete):
 		
+		lienzo = tk.Tk()
+		lienzo.geometry("1000x400")
+		lienzo.pack_propagate(False)
+		lienzo.resizable(True, True)
+		lienzo.title("Comprar Paquete")
+		#crea el treeview
+		tree = ttk.Treeview(lienzo, columns=('Destino', 'Duracion', 'Precio', 'Stock'), show='headings')
+		tree.heading('Destino', text='Destino')
+		tree.heading('Duracion', text='Duracion (Dias)')
+		tree.heading('Precio', text='Precio ($)')
+		tree.heading('Stock', text='Stock')
+
+		tree.pack(side='top', fill='both', expand=True)
+
+		# Crear una barra de desplazamiento
+		scrollbar = ttk.Scrollbar(lienzo, orient='vertical', command=tree.yview)
+		tree.configure(yscroll=scrollbar.set)
+		scrollbar.pack(side='right', fill='y')
+		
+		def compraExitosa():
+			
+			sql.compraDeUsuario(idUsuario,infoPaquete.id_paquete)
+			
+			messagebox.showinfo("Éxito", f"Paquete a {infoPaquete.destino} comprado exitosamente.")
+			
+			lienzo.destroy()
+		
+		
+		tree.insert('', 'end', values=(infoPaquete.destino, infoPaquete.duracion, infoPaquete.precio, infoPaquete.stock,))
+		
+		
+		boton = tk.Button(lienzo, text="Comprar", command=lambda: compraExitosa())
+		boton.pack(pady = 10)
+		
+		
+		botonMenu = tk.Button(lienzo, text= "Menú", command = lambda: ventana_user(lienzo))
+		botonMenu.pack(pady = 10)
 		
 	
 	
@@ -86,6 +123,7 @@ def ventana_user(lienzo):
 	lienzo.mainloop()
     
 	return
+
 
 
 
@@ -529,7 +567,10 @@ def checkLogin(lienzo, username, password):
 		
 	elif usuario == "user_cliente":
 		
-		ventana_user(lienzo)
+		
+		idUsuario = sql.obtenerIdCliente(username, password)
+		
+		ventana_user(lienzo, idUsuario)
 		
 	else:
 		messagebox.showerror("Error", "Usuario o contraseña incorrectos")

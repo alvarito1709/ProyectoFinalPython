@@ -42,7 +42,7 @@ def validarusuario(user, pw):
                 
 			else:  # Si rol es False (0)
 				print("Usuario Normal")
-					
+				
 				return "user_cliente"
 		else:
 		
@@ -56,6 +56,26 @@ def validarusuario(user, pw):
 	except pyodbc.Error as error:
 		print("Error al conectar a la base de datos:", error)
 		
+		
+def obtenerIdCliente(username, password):
+	
+		try:
+			
+			conexion = pyodbc.connect(parametros_conexion)
+			
+			cursor = conexion.cursor()
+			
+			queryId = 'SELECT id FROM usuarios WHERE usuario = ? AND contraseña = ?'
+			
+			idUsuario = cursor.execute(queryId, (username.get(), password.get()))
+			
+			resultado = cursor.fetchone()
+			
+			return resultado[0]
+			
+		except pyodbc.Error as error:
+			
+			print("Error al acceder a la base de datos", error)
 
 def listarUsuarios():
     try:
@@ -338,6 +358,8 @@ def compraDeUsuario(usuarioId, paqueteId):
 		cursor = conexion.cursor()
         
 		query = "INSERT INTO compra_cliente VALUES (?,?)"
+		
+		
 		
 		
 		try: 

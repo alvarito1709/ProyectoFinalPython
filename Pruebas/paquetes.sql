@@ -11,7 +11,7 @@ BEGIN TRANSACTION
 GO
 CREATE TABLE dbo.Table_1
 	(
-	id_paquete bigint NOT NULL IDENTITY (1, 1),
+	id_paquete INT NOT NULL IDENTITY (1, 1),
 	destino nchar(300) NOT NULL,
 	duracion bigint NOT NULL,
 	precio bigint NOT NULL,
