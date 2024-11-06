@@ -10,7 +10,7 @@ parametros_conexion = (
 	
 	#Base de datos JUANk 
 	#r'SERVER=DESKTOP-T6Q6QH5\SQLEXPRESS;'
-    r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
+    r'SERVER=DESKTOP-MM59BEH\SQLEXPRESS;'
     r'DATABASE=DB_USUARIOS;'
     r'Trusted_Connection=yes;'
 )
@@ -357,7 +357,7 @@ def compraDeUsuario(usuarioId, paqueteId):
 
 		cursor = conexion.cursor()
         
-		query = "INSERT INTO compra_cliente VALUES (?,?)"
+		query = ("INSERT INTO compra_cliente VALUES (?,?) ")
 		
 		
 		
@@ -374,5 +374,27 @@ def compraDeUsuario(usuarioId, paqueteId):
 
 	except pyodbc.Error as err:
 		print("Error al conectar la base de datos", err)
-		
+
+	try:
+		conexion = pyodbc.connect(parametros_conexion)
+
+		cursor = conexion.cursor()
+
+		query = ("UPDATE paquetes SET stock = stock -1 WHERE id_paquete = ? ")
+
+		try:
+			cursor.execute(query, (paqueteId))
+
+			cursor.commit()
+
+		except pyodbc.Error as errorcito:
+
+			print("Error al insertar la compra", errorcito)
+
+
+	except pyodbc.Error as err:
+		print("Error al conectar la base de datos", err)
+
+
+
 #compraDeUsuario(2,4)
