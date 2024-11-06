@@ -57,15 +57,16 @@ def ventana_user(lienzo, idUsuario):
 	destinosSQL = sql.listarPaquetes()
     
 	for i in destinosSQL:
-		listaPaquetes[i.destino] = i.id_paquete
+		if i.stock:
+			listaPaquetes[i.destino] = i.id_paquete
 		
 	nombrePaquetes = list(listaPaquetes.keys())
     
 	combo = ttk.Combobox(lienzo, values= nombrePaquetes,width=30, textvariable=select_destino)
 	combo.grid(row=1, column=1)
 	
-	def crearVentanaInfo(infoPaquete):
-		
+	def crearVentanaInfo(infoPaquete,lienzo):
+		lienzo.destroy()
 		lienzo = tk.Tk()
 		lienzo.geometry("1000x400")
 		lienzo.pack_propagate(False)
@@ -85,23 +86,23 @@ def ventana_user(lienzo, idUsuario):
 		tree.configure(yscroll=scrollbar.set)
 		scrollbar.pack(side='right', fill='y')
 		
-		def compraExitosa():
+		def compraExitosa(lienzo, idUsuario):
 			
 			sql.compraDeUsuario(idUsuario,infoPaquete.id_paquete)
 			
 			messagebox.showinfo("Éxito", f"Paquete a {infoPaquete.destino} comprado exitosamente.")
-			
-			lienzo.destroy()
+			ventana_user(lienzo, idUsuario)
+
 		
 		
 		tree.insert('', 'end', values=(infoPaquete.destino, infoPaquete.duracion, infoPaquete.precio, infoPaquete.stock,))
 		
 		
-		boton = tk.Button(lienzo, text="Comprar", command=lambda: compraExitosa())
+		boton = tk.Button(lienzo, text="Comprar", command=lambda: compraExitosa(lienzo,idUsuario))
 		boton.pack(pady = 10)
 		
 		
-		botonMenu = tk.Button(lienzo, text= "Menú", command = lambda: ventana_user(lienzo))
+		botonMenu = tk.Button(lienzo, text= "Menú", command = lambda: ventana_user(lienzo,idUsuario))
 		botonMenu.pack(pady = 10)
 		
 	
@@ -116,7 +117,7 @@ def ventana_user(lienzo, idUsuario):
 		
 		print("El paquete seleccionado viaja a: \n", infoPaquete.destino, "\n Y tiene un coste de: \n", infoPaquete.precio)
 		
-		crearVentanaInfo(infoPaquete)
+		crearVentanaInfo(infoPaquete,lienzo)
 		
 	combo.bind("<<ComboboxSelected>>", lambda event: buscarPaqueteSeleccionado(event))
 	
