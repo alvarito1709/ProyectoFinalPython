@@ -10,6 +10,7 @@ BEGIN
         id INT IDENTITY(1,1) PRIMARY KEY,
         id_usuario INT,
         id_paquete INT,
+		fecha_salida DATE
 
 		FOREIGN KEY (id_usuario) REFERENCES usuarios(id),
 		FOREIGN KEY (id_paquete) REFERENCES paquetes(id_paquete)

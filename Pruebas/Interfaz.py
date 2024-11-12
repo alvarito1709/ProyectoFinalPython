@@ -21,12 +21,13 @@ from ClassPaquete import Paquete, crearPaquete
 
 from ClassUser import User
 
+from tkcalendar import DateEntry
 
-#conecto a la base de datos
+from datetime import datetime
 
 
-#paquetenuevo = Paquete('Bariloche',5, 124300.50, 10)
-#sql.paqueteNuevo(paquetenuevo)
+
+
 
 
 def ventana_user(lienzo, idUsuario):
@@ -44,11 +45,11 @@ def ventana_user(lienzo, idUsuario):
     #recuadro destino
 	groupbox = LabelFrame(lienzo, text="Seleccione el destino", padx=5, pady=5)
     
-	groupbox.grid(row=1, column=0, padx=0, pady=0)
+	groupbox.pack(pady = 10)
     
-	labelDest = Label(groupbox, text="Destino ", width=13, font=("Arial", 12)).grid(row=1, column=0)
+	
     
-	labeldestino = Label(groupbox, text="Seleccione el destino: ", width=20, font=("Arial", 12)).grid(row=1,column=0)
+	labeldestino = Label(groupbox, text="Seleccione el destino: ", width=20, font=("Arial", 12)).pack(pady = 10)
     
 	select_destino = tk.StringVar()
     
@@ -63,7 +64,9 @@ def ventana_user(lienzo, idUsuario):
 	nombrePaquetes = list(listaPaquetes.keys())
     
 	combo = ttk.Combobox(lienzo, values= nombrePaquetes,width=30, textvariable=select_destino)
-	combo.grid(row=1, column=1)
+	combo.pack(pady = 10)
+	
+	
 	
 	def crearVentanaInfo(infoPaquete,lienzo):
 		lienzo.destroy()
@@ -88,15 +91,27 @@ def ventana_user(lienzo, idUsuario):
 		
 		def compraExitosa(lienzo, idUsuario):
 			
-			sql.compraDeUsuario(idUsuario,infoPaquete.id_paquete)
+			try:
+				
+				datoFecha = fechaEntry.get_date()
+				
+				fechaFormateada = datoFecha.isoformat()
 			
-			messagebox.showinfo("Éxito", f"Paquete a {infoPaquete.destino} comprado exitosamente.")
-			ventana_user(lienzo, idUsuario)
+				sql.compraDeUsuario(idUsuario,infoPaquete.id_paquete, fechaFormateada)
+				
+				messagebox.showinfo("Éxito", f"Paquete a {infoPaquete.destino} comprado exitosamente.")
+				ventana_user(lienzo, idUsuario)
+				
+			except pyodbc.Error as error:
+				
+				messagebox.showerror("Error", f"Debe seleccionar una fecha.{error}")
 
 		
 		
 		tree.insert('', 'end', values=(infoPaquete.destino, infoPaquete.duracion, infoPaquete.precio, infoPaquete.stock,))
 		
+		fechaEntry = DateEntry(lienzo, width=12, background = 'darkblue', foreground = 'white', borderwidth= 2, date_pattern='y-mm-dd')
+		fechaEntry.pack(padx=10, pady=10)
 		
 		boton = tk.Button(lienzo, text="Comprar", command=lambda: compraExitosa(lienzo,idUsuario))
 		boton.pack(pady = 10)
@@ -104,6 +119,17 @@ def ventana_user(lienzo, idUsuario):
 		
 		botonMenu = tk.Button(lienzo, text= "Menú", command = lambda: ventana_user(lienzo,idUsuario))
 		botonMenu.pack(pady = 10)
+		
+	botonListarViajesPendientes = tk.Button(lienzo, text="Ver viajes pendientes", command = lambda: ventana_Ver_viajes_Pendientes(lienzo, idUsuario))
+	
+	botonListarViajesPendientes.pack(pady=10)
+		
+	botonSalir = tk.Button(lienzo, text="Salir", command = lambda : salirAlLogin(lienzo))
+	botonSalir.pack(pady=10)
+	
+	
+	
+	
 		
 	
 	
@@ -125,6 +151,53 @@ def ventana_user(lienzo, idUsuario):
     
 	return
 
+
+def ventana_Ver_viajes_Pendientes(lienzo, idUsuario):
+	
+	lienzo.destroy()
+	
+	lienzo = tk.Tk()
+	
+	lienzo.geometry("1000x400")
+	
+	lienzo.pack_propagate(False)
+	
+	lienzo.resizable(True, True)
+	
+	lienzo.title("Tus viajes pendientes")
+	
+	tree = ttk.Treeview(lienzo, columns=('Destino', 'Duracion', 'Fecha de Salida'), show='headings')
+	
+	tree.heading('Destino', text='Destino')
+	
+	tree.heading('Duracion', text='Duracion (Días)')
+	
+	tree.heading('Fecha de Salida', text='Fecha de salida')
+	
+	tree.pack(side='top', fill='both', expand=True)
+	
+	viajes = sql.listarViajesPendientes(idUsuario)
+	
+	paquetes = []
+	
+	for i in viajes: 
+		
+		paquetePendiente = sql.buscarPaquetePorId(i[2])
+		
+		paquetes.append(paquetePendiente)
+	
+	
+	for indice, paquete in enumerate(paquetes):
+		
+		tree.insert('', 'end', values=(paquete.destino, paquete.duracion, viajes[indice].fecha_salida))
+		
+	botonMenu = tk.Button(lienzo, text= "Menú", command = lambda: ventana_user(lienzo,idUsuario))
+	
+	botonMenu.pack(pady=10)
+	
+	
+	
+	
 
 
 
@@ -366,6 +439,9 @@ def ventana_adm(lienzo):
     Button(groupbox, text="Editar Usuario", command=lambda: ventana_moduser(lienzo), width=20).grid(row=4, column=0)
     Button(groupbox, text="Agregar Usuario", command=lambda: ventana_adduser(lienzo), width=20).grid(row=4, column=1)
     Button(groupbox, text="Eliminar Usuario", command=lambda: ventana_deluser(lienzo), width=20).grid(row=4, column=2)
+    
+    botonSalir = tk.Button(lienzo, text="Salir", command = lambda : salirAlLogin(lienzo))
+    botonSalir.grid( pady=10)
 
 def modificar_usuario(tree):
 	
@@ -577,8 +653,15 @@ def checkLogin(lienzo, username, password):
 		messagebox.showerror("Error", "Usuario o contraseña incorrectos")
 
 
-class LoginUsuario:
-	def login():
+def salirAlLogin(lienzo):
+	lienzo.destroy()
+	
+	
+	
+	login()
+
+
+def login():
 		try:
 			lienzo = Tk()
 			lienzo.geometry("800x400")
@@ -617,5 +700,8 @@ class LoginUsuario:
 		except ValueError as error:
 			print("Error al mostrar la interfaz, error: {}".format(error))
 
+class LoginUsuario:
+	
+	
 	login()
 

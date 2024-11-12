@@ -10,7 +10,7 @@ parametros_conexion = (
 	
 	#Base de datos JUANk 
 	#r'SERVER=DESKTOP-T6Q6QH5\SQLEXPRESS;'
-    r'SERVER=DESKTOP-MM59BEH\SQLEXPRESS;'
+    r'SERVER=DESKTOP-5QHOBD5\SQLEXPRESS;'
     r'DATABASE=DB_USUARIOS;'
     r'Trusted_Connection=yes;'
 )
@@ -350,20 +350,20 @@ def eliminarPaquete(paqueteId):
 
 	
 	
-def compraDeUsuario(usuarioId, paqueteId):
+def compraDeUsuario(usuarioId, paqueteId, fecha):
 	
 	try:
 		conexion = pyodbc.connect(parametros_conexion)
 
 		cursor = conexion.cursor()
         
-		query = ("INSERT INTO compra_cliente VALUES (?,?) ")
+		query = ("INSERT INTO compra_cliente VALUES (?,?,?) ")
 		
 		
 		
 		
 		try: 
-			cursor.execute(query,(usuarioId, paqueteId))
+			cursor.execute(query,(usuarioId, paqueteId, fecha))
 			
 			cursor.commit()
 			
@@ -396,5 +396,38 @@ def compraDeUsuario(usuarioId, paqueteId):
 		print("Error al conectar la base de datos", err)
 
 
+
+def listarViajesPendientes(idUsuario):
+	
+	try:
+			conexion = pyodbc.connect(parametros_conexion)
+
+			cursor = conexion.cursor()
+
+			# Query para buscar paquete por ID
+			query = "SELECT * FROM compra_cliente WHERE id_usuario = ? AND fecha_salida >= GETDATE()"
+			
+			try:
+					
+				#ejecuta la query que declaramos anteriormente junto a la variable que toma por parametro la funcion
+				cursor.execute(query, idUsuario)
+
+				paquetes = cursor.fetchall()
+				
+				return paquetes
+					
+			except pyodbc.Error as err:
+					
+				print("Paquete no encontrado", err)
+				
+				
+
+			cursor.close()
+			conexion.close()
+
+	except pyodbc.Error as error:
+		print("Error al conectar a la base de datos:", error.with_traceback)
+	
+	
 
 #compraDeUsuario(2,4)
