@@ -520,33 +520,40 @@ def modificar_usuario(tree):
 
 
         def guardarcambios():
+            usuario = entry_usuario.get()
+            contrasena = entry_contrasena.get()
+            email = entry_email.get()
+			
             try:
-                usuario = entry_usuario.get()
-                contrasena = entry_contrasena.get()
-                rol = int(entry_rol.get())
-                email = entry_email.get()
-                user_id = int(usuario_id)
+            	rol = int(entry_rol.get())
+				
+            except ValueError:
+                messagebox.showerror("Error", "El rol debe ser 1 (admin) o 0 (cliente).")
+                return
 
-                # Crear objeto User con los datos modificados
-                usuario_modificado = User(usuario, contrasena, rol, email)
-                usuario_modificado.id = user_id
+    # Validar los datos antes de modificar el usuario
+            if validar_datos(usuario, contrasena, email, rol):
+                try:
+                   user_id = int(usuario_id)
+                   usuario_modificado = User(usuario, contrasena, rol, email)
+                   usuario_modificado.id = user_id
 
                 # Llamada a la función para modificar en la base de datos
-                sql.modificarUsuario(usuario_modificado)
+                   sql.modificarUsuario(usuario_modificado)
+                   usuarios = sql.listarUsuarios()
+                   for item in tree.get_children():
+                        tree.delete(item)
+                   for usuario in usuarios:
+                        tree.insert('', 'end', values=(usuario.id, usuario.usuario, usuario.contrasena, usuario.rol, usuario.email))
 
-                # Actualizar el Treeview después de la modificación
-                usuarios = sql.listarUsuarios()
-                for item in tree.get_children():
-                    tree.delete(item)
-                for usuario in usuarios:
-                    tree.insert('', 'end', values=(usuario.id, usuario.usuario, usuario.contrasena, usuario.rol, usuario.email))
+                   ventana_mod.destroy()  # Cerrar la ventana de modificación
+                   messagebox.showinfo("Éxito", "Usuario modificado con éxito.")
 
-                ventana_mod.destroy()  # Cerrar la ventana de modificación
+                except Exception as exc:
+                    messagebox.showerror("Error", f"Error al guardar los cambios: {exc}")
 
-            except ValueError as error:
-                messagebox.showerror("Error de Valor", f"Ingrese valores válidos: {error}")
-            except Exception as exc:
-                messagebox.showerror("Error", f"Error al guardar los cambios: {exc}")
+
+
 
 def ventana_moduser(lienzo):
         lienzo.destroy()
@@ -576,6 +583,21 @@ def ventana_moduser(lienzo):
         botonMenu.pack(pady=20)
 
         lienzo.mainloop()
+
+def validar_datos(usuario, contrasena, email, rol):
+        if not usuario.strip():
+            messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
+            return False
+        if len(contrasena) < 4:
+            messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
+            return False
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messagebox.showerror("Error", "El email no es válido.")
+            return False
+        if rol not in [0, 1]:
+            messagebox.showerror("Error", "El rol debe ser 1 (admin) o 0 (cliente).")
+            return False
+        return True
 
 
 
@@ -609,7 +631,7 @@ def ventana_adduser(lienzo):
         if not usuario.strip():
             messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
             return False
-        if len(contrasena) < 6:
+        if len(contrasena) < 4:
             messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
             return False
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
