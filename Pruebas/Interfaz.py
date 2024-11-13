@@ -27,6 +27,10 @@ from tkcalendar import DateEntry
 
 from datetime import datetime
 
+import os
+from reportlab.lib.pagesizes import letter
+from reportlab.pdfgen import canvas
+
 
 
 
@@ -102,11 +106,32 @@ def ventana_user(lienzo, idUsuario):
 				sql.compraDeUsuario(idUsuario,infoPaquete.id_paquete, fechaFormateada)
 				
 				messagebox.showinfo("Éxito", f"Paquete a {infoPaquete.destino} comprado exitosamente.")
+                        
+				# Generar y abrir el PDF automáticamente
+				generar_pdf(infoPaquete, idUsuario, fechaFormateada)
+
 				ventana_user(lienzo, idUsuario)
 				
 			except pyodbc.Error as error:
 				
 				messagebox.showerror("Error", f"Debe seleccionar una fecha.{error}")
+                        
+		def generar_pdf(infoPaquete, idUsuario, fecha):
+			# Generar el PDF y guardarlo con un nombre específico
+			archivo_pdf = "compra_paquete.pdf"
+			
+			# Creación del PDF
+			c = canvas.Canvas(archivo_pdf, pagesize=letter)
+			c.drawString(100, 750, "Resumen de Compra de Paquete")
+			c.drawString(100, 700, f"Usuario ID: {idUsuario}")
+			c.drawString(100, 675, f"Destino: {infoPaquete.destino}")
+			c.drawString(100, 650, f"Duración: {infoPaquete.duracion} días")
+			c.drawString(100, 625, f"Precio: ${infoPaquete.precio}")
+			c.drawString(100, 600, f"Fecha de Salida: {fecha}")
+			c.save()
+			
+			# Abre el PDF automáticamente en el visor predeterminado de Windows
+			os.startfile(archivo_pdf)
 
 		
 		
@@ -588,8 +613,8 @@ def validar_datos(usuario, contrasena, email, rol):
         if not usuario.strip():
             messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
             return False
-        if len(contrasena) < 4:
-            messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
+        if len(contrasena) < 5:
+            messagebox.showerror("Error", "La contraseña debe tener al menos 5 caracteres.")
             return False
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             messagebox.showerror("Error", "El email no es válido.")
@@ -631,8 +656,8 @@ def ventana_adduser(lienzo):
         if not usuario.strip():
             messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
             return False
-        if len(contrasena) < 4:
-            messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
+        if len(contrasena) < 5:
+            messagebox.showerror("Error", "La contraseña debe tener al menos 5 caracteres.")
             return False
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             messagebox.showerror("Error", "El email no es válido.")
@@ -767,8 +792,8 @@ def registrarUsuario():
         if not usuario.strip():
             messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
             return False
-        if len(contrasena) < 4:
-            messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
+        if len(contrasena) < 5:
+            messagebox.showerror("Error", "La contraseña debe tener al menos 5 caracteres.")
             return False
         if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
             messagebox.showerror("Error", "El email no es válido.")
