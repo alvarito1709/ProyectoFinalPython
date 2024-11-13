@@ -264,6 +264,14 @@ def modificar_paquete(tree, paquetes):
 				duracion = int(duracion)
 				precio = float(precio)
 				stock = int(stock)
+
+				if duracion < 0 or precio < 0 or stock < 0:
+					messagebox.showerror("Error", "Duración, Precio y Stock no pueden ser negativos.")
+					ventana_mod.destroy()
+					return
+				
+         
+
 			except ValueError:
 				messagebox.showerror("Error", "Duración y Stock deben ser números enteros, y Precio debe ser un número decimal.")
 				ventana_mod.destroy()
@@ -369,6 +377,12 @@ def ventana_addpaq(lienzo):
             duracion = int(duracion)
             precio = float(precio)
             stock = int(stock)
+
+            if duracion < 0 or precio < 0 or stock < 0:
+                messagebox.showerror("Error", "Duración, Precio y Stock no pueden ser negativos.")
+                return
+
+
         except ValueError:
             messagebox.showerror("Error", "Duración y Stock deben ser números enteros, y Precio debe ser un número decimal.")
             return
