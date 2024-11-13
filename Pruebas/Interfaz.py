@@ -13,6 +13,8 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter import messagebox
 from typing import List, Any
+import re
+from tkinter import messagebox
 
 import pyodbc
 
@@ -603,19 +605,44 @@ def ventana_adduser(lienzo):
     entry_rol = ttk.Entry(lienzo)
     entry_rol.pack(pady=5)
 
+    def validar_datos(usuario, contrasena, email, rol):
+        if not usuario.strip():
+            messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
+            return False
+        if len(contrasena) < 6:
+            messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
+            return False
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messagebox.showerror("Error", "El email no es válido.")
+            return False
+        if rol not in [0, 1]:
+            messagebox.showerror("Error", "El rol debe ser 1 (admin) o 0 (cliente).")
+            return False
+        return True
+
+
+
+
 
     # Función para enviar datos al conector SQL
     def agregar_usuario():
         usuario = entry_usuario.get()
         contrasena = entry_contrasena.get()
         email = entry_email.get()
-        rol = int(entry_rol.get())
-       
-        # Llamada a la función de sqlConnector para crear un usuario
-        nuevo_usuario = User(usuario, contrasena, rol, email)
-        sql.usuarioNuevo(nuevo_usuario)
-        messagebox.showinfo("Éxito", f"Usuario {usuario} agregado con éxito")
-        lienzo.destroy()
+
+        try:
+            rol = int(entry_rol.get())
+
+        except ValueError:
+            messagebox.showerror("Error", "El rol debe ser 1 (admin) o 0 (cliente).")
+            return
+
+		
+        if validar_datos(usuario, contrasena, email, rol):
+            nuevo_usuario = User(usuario, contrasena, rol, email)
+            sql.usuarioNuevo(nuevo_usuario)
+            messagebox.showinfo("Éxito", f"Usuario {usuario} agregado con éxito")
+            lienzo.destroy()
 
 
     # Botón para agregar usuario
