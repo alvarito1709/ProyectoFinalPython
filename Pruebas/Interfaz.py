@@ -38,7 +38,7 @@ def ventana_user(lienzo, idUsuario):
     
 	lienzo = tk.Tk()
     
-	lienzo.geometry("800x400")
+	lienzo.geometry("400x400")
     
 	lienzo.title("User")
 	
@@ -336,75 +336,75 @@ def ventana_modpaq(lienzo):
 	lienzo.mainloop()
 
 def ventana_addpaq(lienzo):
-    lienzo.destroy()
-    lienzo = tk.Tk()
-    lienzo.geometry("550x300")
-    lienzo.title("Agregar Paquete")
+	lienzo.destroy()
+	lienzo = tk.Tk()
+	lienzo.geometry("550x300")
+	lienzo.title("Agregar Paquete")
 
 
     # Etiquetas y entradas para los datos del nuevo paquete
-    tk.Label(lienzo, text="Destino").grid(row=0, column=0, padx=10, pady=10)
-    entry_destino = tk.Entry(lienzo, width=30)
-    entry_destino.grid(row=0, column=1, padx=10, pady=10)
+	tk.Label(lienzo, text="Destino").grid(row=0, column=0, padx=10, pady=10)
+	entry_destino = tk.Entry(lienzo, width=30)
+	entry_destino.grid(row=0, column=1, padx=10, pady=10)
 
 
-    tk.Label(lienzo, text="Duración (días)").grid(row=1, column=0, padx=10, pady=10)
-    entry_duracion = tk.Entry(lienzo, width=30)
-    entry_duracion.grid(row=1, column=1, padx=10, pady=10)
+	tk.Label(lienzo, text="Duración (días)").grid(row=1, column=0, padx=10, pady=10)
+	entry_duracion = tk.Entry(lienzo, width=30)
+	entry_duracion.grid(row=1, column=1, padx=10, pady=10)
 
 
-    tk.Label(lienzo, text="Precio").grid(row=2, column=0, padx=10, pady=10)
-    entry_precio = tk.Entry(lienzo, width=30)
-    entry_precio.grid(row=2, column=1, padx=10, pady=10)
+	tk.Label(lienzo, text="Precio").grid(row=2, column=0, padx=10, pady=10)
+	entry_precio = tk.Entry(lienzo, width=30)
+	entry_precio.grid(row=2, column=1, padx=10, pady=10)
 
 
-    tk.Label(lienzo, text="Stock").grid(row=3, column=0, padx=10, pady=10)
-    entry_stock = tk.Entry(lienzo, width=30)
-    entry_stock.grid(row=3, column=1, padx=10, pady=10)
+	tk.Label(lienzo, text="Stock").grid(row=3, column=0, padx=10, pady=10)
+	entry_stock = tk.Entry(lienzo, width=30)
+	entry_stock.grid(row=3, column=1, padx=10, pady=10)
 
 
     # Función para agregar paquete
-    def agregar_paquete():
-        destino = entry_destino.get()
-        duracion = entry_duracion.get()
-        precio = entry_precio.get()
-        stock = entry_stock.get()
+	def agregar_paquete():
+		destino = entry_destino.get()
+		duracion = entry_duracion.get()
+		precio = entry_precio.get()
+		stock = entry_stock.get()
 		
 		# Validar campos vacíos
-        if not destino or not duracion or not precio or not stock:
-            messagebox.showerror("Error", "Todos los campos deben estar completos.")
-            return
+		if not destino or not duracion or not precio or not stock:
+			messagebox.showerror("Error", "Todos los campos deben estar completos.")
+			return
 		
-        try:
-            duracion = int(duracion)
-            precio = float(precio)
-            stock = int(stock)
+		try:
+			duracion = int(duracion)
+			precio = float(precio)
+			stock = int(stock)
 
-            if duracion < 0 or precio < 0 or stock < 0:
-                messagebox.showerror("Error", "Duración, Precio y Stock no pueden ser negativos.")
-                return
+			if duracion < 0 or precio < 0 or stock < 0:
+				messagebox.showerror("Error", "Duración, Precio y Stock no pueden ser negativos.")
+				return
 
 
-        except ValueError:
-            messagebox.showerror("Error", "Duración y Stock deben ser números enteros, y Precio debe ser un número decimal.")
-            return
+		except ValueError:
+			messagebox.showerror("Error", "Duración y Stock deben ser números enteros, y Precio debe ser un número decimal.")
+			return
 		
-        nuevo_paquete = Paquete(destino, duracion, precio, stock)
-        sql.paqueteNuevo(nuevo_paquete)
-        messagebox.showinfo("Éxito", f"Paquete a {destino} agregado exitosamente.")
-        ventana_adm(lienzo)
+		nuevo_paquete = Paquete(destino, duracion, precio, stock)
+		sql.paqueteNuevo(nuevo_paquete)
+		messagebox.showinfo("Éxito", f"Paquete a {destino} agregado exitosamente.")
+		ventana_adm(lienzo)
 
 
     # Botón para agregar el paquete
-    boton_agregar = tk.Button(lienzo, text="Agregar Paquete", command=agregar_paquete)
-    boton_agregar.grid(row=4, column=0, columnspan=2, pady=20)
+	boton_agregar = tk.Button(lienzo, text="Agregar Paquete", command=agregar_paquete)
+	boton_agregar.grid(row=4, column=0, columnspan=2, pady=20)
     
     
-    boton = tk.Button(lienzo, text="Menú", command = lambda: ventana_adm(lienzo))
-    boton.grid(row=4, column=2, columnspan=2, pady=20)
+	boton = tk.Button(lienzo, text="Menú", command = lambda: ventana_adm(lienzo))
+	boton.grid(row=4, column=2, columnspan=2, pady=20)
 
 
-    lienzo.mainloop()
+	lienzo.mainloop()
 
 def ventana_delpaq(lienzo):
 	lienzo.destroy()
@@ -736,6 +736,80 @@ def salirAlLogin(lienzo):
 	login()
 
 
+def registrarUsuario():
+    
+    lienzo = tk.Tk()
+    lienzo.geometry("550x400")
+    lienzo.title("Agregar Usuario")
+   
+    # Crear etiquetas y campos de entrada
+    tk.Label(lienzo, text="Nombre de Usuario").pack(pady=5)
+    entry_usuario = ttk.Entry(lienzo)
+    entry_usuario.pack(pady=5)
+
+
+    tk.Label(lienzo, text="Contraseña").pack(pady=5)
+    entry_contrasena = ttk.Entry(lienzo, show='*')
+    entry_contrasena.pack(pady=5)
+
+
+    tk.Label(lienzo, text="Email").pack(pady=5)
+    entry_email = ttk.Entry(lienzo)
+    entry_email.pack(pady=5)
+
+
+    
+    entry_rol = ttk.Entry(lienzo)
+    entry_rol.insert(0,0)
+    
+
+    def validar_datos(usuario, contrasena, email, rol):
+        if not usuario.strip():
+            messagebox.showerror("Error", "El nombre de usuario no puede estar vacío.")
+            return False
+        if len(contrasena) < 4:
+            messagebox.showerror("Error", "La contraseña debe tener al menos 6 caracteres.")
+            return False
+        if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            messagebox.showerror("Error", "El email no es válido.")
+            return False
+        if rol not in [0, 1]:
+            messagebox.showerror("Error", "El rol debe ser 1 (admin) o 0 (cliente).")
+            return False
+        return True
+
+
+
+
+
+    # Función para enviar datos al conector SQL
+    def agregar_usuario():
+        usuario = entry_usuario.get()
+        contrasena = entry_contrasena.get()
+        email = entry_email.get()
+
+        try:
+            rol = int(entry_rol.get())
+
+        except ValueError:
+            messagebox.showerror("Error", "El rol debe ser 1 (admin) o 0 (cliente).")
+            return
+
+		
+        if validar_datos(usuario, contrasena, email, rol):
+            nuevo_usuario = User(usuario, contrasena, rol, email)
+            sql.usuarioNuevo(nuevo_usuario)
+            messagebox.showinfo("Éxito", f"Usuario {usuario} agregado con éxito")
+            lienzo.destroy()
+
+
+    # Botón para agregar usuario
+    tk.Button(lienzo, text="Agregar Usuario", command=agregar_usuario).pack(pady=10)
+    
+    tk.Button(lienzo, text="Menú", command= lambda: ventana_adm(lienzo)).pack(pady=10)
+    lienzo.mainloop()
+
+
 def login():
 		try:
 			lienzo = Tk()
@@ -764,6 +838,7 @@ def login():
 			textboxpw.grid(row=1, column=2)
 
 			Button(groupbox, text="Login", command=lambda: checkLogin(lienzo, username, password), width=10).grid(row=2, column=1)
+			Button(groupbox, text="Registrarme", command = lambda : registrarUsuario()).grid(row=10, column=1, pady= 10)
             
 					
 
