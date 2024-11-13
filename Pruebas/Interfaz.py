@@ -249,28 +249,30 @@ def modificar_paquete(tree, paquetes):
 		#ver porque no puede guardar los datos en la base de datos
 		def guardarcambios():
 			
+			destino = entry_destino.get()
+			duracion = entry_duracion.get()
+			precio = entry_precio.get()
+			stock = entry_stock.get()
+			idPack = int(id_paquete)
+    
+			if not destino or not duracion or not precio or not stock:
+				messagebox.showerror("Error", "Todos los campos deben estar completos.")
+				ventana_mod.destroy()
+				return
+    
 			try:
-				
-				destino = entry_destino.get()
-				duracion = int(entry_duracion.get())
-				precio = float(entry_precio.get())
-				stock = int(entry_stock.get())
-				idPack = int(id_paquete)
+				duracion = int(duracion)
+				precio = float(precio)
+				stock = int(stock)
+			except ValueError:
+				messagebox.showerror("Error", "Duración y Stock deben ser números enteros, y Precio debe ser un número decimal.")
+				ventana_mod.destroy()
+				return
+    
+			pack = Paquete(destino, duracion, precio, stock, idPack)
+			sql.modificarPaquete(pack)
+			ventana_mod.destroy()  # Cerrar la ventana de modificación
 
-				pack = Paquete(destino, duracion, precio, stock, idPack)
-	
-
-				sql.modificarPaquete(pack)
-				
-			except ValueError as error:
-				
-				messagebox.showerror({error}, 'Por favor ingrese valores validos')
-				
-			except Exception as exc: 
-				
-				messagebox.showerror('Error al guardar los cambios ',{exc})
-				
-			
 			# Actualizar el Treeview
 			paquetes = sql.listarPaquetes()
 			
@@ -354,14 +356,24 @@ def ventana_addpaq(lienzo):
     # Función para agregar paquete
     def agregar_paquete():
         destino = entry_destino.get()
-        duracion = int(entry_duracion.get())
-        precio = float(entry_precio.get())
-        stock = int(entry_stock.get())
-
-
+        duracion = entry_duracion.get()
+        precio = entry_precio.get()
+        stock = entry_stock.get()
+		
+		# Validar campos vacíos
+        if not destino or not duracion or not precio or not stock:
+            messagebox.showerror("Error", "Todos los campos deben estar completos.")
+            return
+		
+        try:
+            duracion = int(duracion)
+            precio = float(precio)
+            stock = int(stock)
+        except ValueError:
+            messagebox.showerror("Error", "Duración y Stock deben ser números enteros, y Precio debe ser un número decimal.")
+            return
+		
         nuevo_paquete = Paquete(destino, duracion, precio, stock)
-       
-        # Llama a la función en sqlConnector para agregar el paquete
         sql.paqueteNuevo(nuevo_paquete)
         messagebox.showinfo("Éxito", f"Paquete a {destino} agregado exitosamente.")
         ventana_adm(lienzo)
