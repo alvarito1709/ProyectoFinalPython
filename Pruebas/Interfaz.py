@@ -15,22 +15,15 @@ from tkinter import messagebox
 from typing import List, Any
 import re
 from tkinter import messagebox
-
 import pyodbc
-
 import sqlConnector as sql
 from ClassPaquete import Paquete, crearPaquete
-
 from ClassUser import User
-
 from tkcalendar import DateEntry
-
 from datetime import datetime
-
 import os
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
-
 from tkinter import Label, LabelFrame, ttk
 from PIL import Image, ImageTk
 
@@ -416,7 +409,7 @@ def ventana_addpaq(lienzo):
 			precio = float(precio)
 			stock = int(stock)
 
-			if duracion < 0 or precio < 0 or stock < 0:
+			if duracion <= 0 or precio <= 0 or stock <= 0:
 				messagebox.showerror("Error", "Duración, Precio y Stock no pueden ser negativos.")
 				return
 
