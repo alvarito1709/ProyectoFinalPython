@@ -31,9 +31,8 @@ import os
 from reportlab.lib.pagesizes import letter
 from reportlab.pdfgen import canvas
 
-
-
-
+from tkinter import Label, LabelFrame, ttk
+from PIL import Image, ImageTk
 
 
 def ventana_user(lienzo, idUsuario):
@@ -45,9 +44,21 @@ def ventana_user(lienzo, idUsuario):
 	lienzo.geometry("400x400")
     
 	lienzo.title("User")
-	
 
-    
+	try:
+		imagen = Image.open(r"C:\Users\JUANK\Desktop\Proyecto Final\ProyectoFinalPython\Pruebas\imagen_agencia.jpg")
+		imagen = imagen.resize((100, 100), Image.LANCZOS)  # Reemplaza ANTIALIAS por LANCZOS
+		imagen_tk = ImageTk.PhotoImage(imagen)
+        
+        # Crear un widget Label para mostrar la imagen
+		label_imagen = Label(lienzo, image=imagen_tk)
+		label_imagen.image = imagen_tk  # Necesario para mantener la referencia a la imagen
+		label_imagen.pack(pady=10)
+
+	except Exception as e:
+		print(f"Error al cargar la imagen: {e}")	
+
+
     #recuadro destino
 	groupbox = LabelFrame(lienzo, text="Seleccione el destino", padx=5, pady=5)
     
@@ -477,10 +488,24 @@ def ventana_delpaq(lienzo):
 def ventana_adm(lienzo):
     lienzo.destroy()
     lienzo = tk.Tk()
-    lienzo.geometry("550x200")
+    lienzo.geometry("550x300")
     lienzo.title("Administrador")
     
+    # Intentar cargar y mostrar la imagen
+    try:
+        imagen = Image.open(r"C:\Users\JUANK\Desktop\Proyecto Final\ProyectoFinalPython\Pruebas\imagen_agencia.jpg")
+        imagen = imagen.resize((100, 100), Image.LANCZOS)
+        imagen_tk = ImageTk.PhotoImage(imagen)
+        
+        # Crear un widget Label para mostrar la imagen y colocarlo en la ventana
+        label_imagen = Label(lienzo, image=imagen_tk)
+        label_imagen.image = imagen_tk  # Mantener referencia a la imagen
+        label_imagen.grid(row=0, column=0, pady=10)  # Usar grid en lugar de pack
 
+    except Exception as e:
+        print(f"Error al cargar la imagen: {e}")
+        
+	
     groupbox = LabelFrame(lienzo, text="Seleccione una opcion", padx=50, pady=5)
     groupbox.grid(row=1, column=0, padx=0, pady=0)
 
@@ -495,6 +520,7 @@ def ventana_adm(lienzo):
     
     botonSalir = tk.Button(lienzo, text="Salir", command = lambda : salirAlLogin(lienzo))
     botonSalir.grid( pady=10)
+
 
 def modificar_usuario(tree):
 	
@@ -839,14 +865,25 @@ def login():
 		try:
 			lienzo = Tk()
 			lienzo.geometry("800x400")
-			lienzo.title("Login")
-			
+			lienzo.title("LOGIN")
+                  
+			try:
+				imagen = Image.open(r"C:\Users\JUANK\Desktop\Proyecto Final\ProyectoFinalPython\Pruebas\imagen_agencia.jpg")
+				imagen = imagen.resize((150, 150), Image.LANCZOS)  # Ajusta el tamaño de la imagen
+				imagen_tk = ImageTk.PhotoImage(imagen)
 
+				# Crear un widget Label para mostrar la imagen
+				label_imagen = Label(lienzo, image=imagen_tk)
+				label_imagen.image = imagen_tk  # Necesario para mantener la referencia a la imagen
+				label_imagen.grid(row=0, column=0, padx=10, pady=10)  # Usamos grid para que no entre en conflicto con el siguiente formulario
+
+			except Exception as e:
+				print(f"Error al cargar la imagen: {e}")
 
             # recuadro de Login
             # recuadro de Login
 			groupbox = LabelFrame(lienzo, text="Login", padx=5, pady=5)
-			groupbox.grid(column=0, row=0, padx=220, pady=20)
+			groupbox.grid(column=0, row=2, padx=220, pady=20)
 
             # Variables para almacenar el contenido de los Entry
 			username = StringVar()
