@@ -46,7 +46,7 @@ def ventana_user(lienzo, idUsuario):
 	lienzo.title("User")
 
 	try:
-		imagen = Image.open(r"C:\Users\JUANK\Desktop\Proyecto Final\ProyectoFinalPython\Pruebas\imagen_agencia.jpg")
+		imagen = Image.open(r"imagen_agencia.jpg")
 		imagen = imagen.resize((100, 100), Image.LANCZOS)  # Reemplaza ANTIALIAS por LANCZOS
 		imagen_tk = ImageTk.PhotoImage(imagen)
         
@@ -493,7 +493,7 @@ def ventana_adm(lienzo):
     
     # Intentar cargar y mostrar la imagen
     try:
-        imagen = Image.open(r"C:\Users\JUANK\Desktop\Proyecto Final\ProyectoFinalPython\Pruebas\imagen_agencia.jpg")
+        imagen = Image.open(r"imagen_agencia.jpg")
         imagen = imagen.resize((100, 100), Image.LANCZOS)
         imagen_tk = ImageTk.PhotoImage(imagen)
         
@@ -866,7 +866,7 @@ def login():
 			lienzo.title("LOGIN")
                   
 			try:
-				imagen = Image.open(r"C:\Users\JUANK\Desktop\Proyecto Final\ProyectoFinalPython\Pruebas\imagen_agencia.jpg")
+				imagen = Image.open(r"imagen_agencia.jpg")
 				imagen = imagen.resize((150, 150), Image.LANCZOS)  # Ajusta el tamaño de la imagen
 				imagen_tk = ImageTk.PhotoImage(imagen)
 
