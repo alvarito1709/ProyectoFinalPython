@@ -857,8 +857,6 @@ def registrarUsuario():
     # Botón para agregar usuario
     tk.Button(lienzo, text="Agregar Usuario", command=agregar_usuario).pack(pady=10)
     
-    tk.Button(lienzo, text="Menú", command= lambda: ventana_adm(lienzo)).pack(pady=10)
-    lienzo.mainloop()
 
 
 def login():
